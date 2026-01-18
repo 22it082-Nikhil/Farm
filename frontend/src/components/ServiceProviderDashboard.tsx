@@ -9,6 +9,7 @@ import {
   Search, Filter, Eye, MessageSquare, FileText, Download, Upload, Wrench, Menu, User,
   Bell, Trash, UserCheck, Home, Briefcase, Award, Trash2
 } from 'lucide-react' // Icon library for consistent UI elements
+import API_URL from '../config'
 
 const ServiceProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')

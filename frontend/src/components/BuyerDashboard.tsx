@@ -58,7 +58,7 @@ const BuyerDashboard = () => {
     if (!user?._id) return
 
     try {
-      const res = await fetch(`http://localhost:5001/api/auth/update/${user._id}`, {
+      const res = await fetch(`${API_URL}/api/auth/update/${user._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -96,7 +96,7 @@ const BuyerDashboard = () => {
   const fetchMyOrders = async () => {
     if (!user?._id) return
     try {
-      const response = await fetch(`http://localhost:5001/api/offers?buyerId=${user._id}`)
+      const response = await fetch(`${API_URL}/api/offers?buyerId=${user._id}`)
       if (response.ok) {
         const data = await response.json()
         setMyOrders(data)
@@ -114,7 +114,7 @@ const BuyerDashboard = () => {
       setUser(parsedUser)
       // Fetch data only after user is loaded
       if (parsedUser._id) {
-        fetch(`http://localhost:5001/api/offers?buyerId=${parsedUser._id}`)
+        fetch(`${API_URL}/api/offers?buyerId=${parsedUser._id}`)
           .then(res => res.json())
           .then(data => setMyOrders(data))
           .catch(err => console.error(err))
@@ -133,7 +133,7 @@ const BuyerDashboard = () => {
   const fetchSavedCrops = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://localhost:5001/api/users/${user._id}`)
+      const res = await fetch(`${API_URL}/api/users/${user._id}`)
       if (res.ok) {
         const data = await res.json()
         setSavedCrops(data.savedCrops || [])
@@ -146,7 +146,7 @@ const BuyerDashboard = () => {
   const handleToggleSave = async (cropId: string) => {
     if (!user?._id) return
     try {
-      const res = await fetch(`http://localhost:5001/api/users/${user._id}/toggle-save`, {
+      const res = await fetch(`${API_URL}/api/users/${user._id}/toggle-save`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cropId })
@@ -244,7 +244,7 @@ const BuyerDashboard = () => {
 
   const fetchCrops = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/crops')
+      const response = await fetch('${API_URL}/api/crops')
       if (response.ok) {
         const data = await response.json()
         setCrops(data)
@@ -272,7 +272,7 @@ const BuyerDashboard = () => {
     if (!user || !selectedCrop) return
 
     try {
-      const response = await fetch('http://localhost:5001/api/offers', {
+      const response = await fetch('${API_URL}/api/offers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -662,7 +662,7 @@ const BuyerDashboard = () => {
                     onClick={async () => {
                       if (window.confirm('Are you sure you want to cancel this order?')) {
                         try {
-                          const res = await fetch(`http://localhost:5001/api/offers/${order._id}`, { method: 'DELETE' })
+                          const res = await fetch(`${API_URL}/api/offers/${order._id}`, { method: 'DELETE' })
                           if (res.ok) {
                             alert('Order cancelled successfully')
                             fetchMyOrders()

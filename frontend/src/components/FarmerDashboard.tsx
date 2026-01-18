@@ -10,6 +10,7 @@ import {
   CheckCircle, AlertCircle, Trash,
   ArrowRight, Cloud, Sun, Warehouse, UserCheck, Home, Shield, Wrench, Star, Clock, Crop
 } from 'lucide-react' // Icon library for consistent UI elements
+import API_URL from '../config'
 
 // Main Farmer Dashboard Component - Provides comprehensive interface for crop farmers
 const FarmerDashboard = () => {
@@ -171,7 +172,7 @@ const FarmerDashboard = () => {
   const fetchReportData = async () => {
     if (!user?._id) return
     try {
-      const response = await fetch(`http://localhost:5001/api/offers?farmerId=${user._id}&status=accepted`)
+      const response = await fetch(`${API_URL}/api/offers?farmerId=${user._id}&status=accepted`)
       if (response.ok) {
         const data = await response.json()
 
