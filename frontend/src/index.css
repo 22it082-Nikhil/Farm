@@ -1,0 +1,54 @@
+/* Import Google Fonts for consistent typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* Tailwind CSS directives */
+@tailwind base; /* Base styles and CSS reset */
+@tailwind components; /* Component classes */
+@tailwind utilities; /* Utility classes */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+/* Components layer - Custom component classes for consistent UI elements */
+@layer components {
+  /* Primary button style - Main action buttons with hover effects */
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  }
+  
+  /* Secondary button style - Alternative action buttons with earth theme */
+  .btn-secondary {
+    @apply bg-earth-500 hover:bg-earth-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  }
+  
+  /* Outline button style - Secondary actions with border and hover fill */
+  .btn-outline {
+    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105;
+  }
+  
+  /* Card component style - Consistent card design with hover animations */
+  .card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2;
+  }
+  
+  /* Gradient background - Green gradient for primary elements */
+  .gradient-bg {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+  }
+  
+  /* Glass effect - Transparent background with blur for modern UI */
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/20 border border-white/30;
+  }
+}

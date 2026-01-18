@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/npm-debug.log*
+
+# Env
+frontend/.env
+frontend/.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Coverage
+frontend/coverage/
+node_modules

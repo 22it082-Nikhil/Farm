@@ -946,4 +946,3 @@ npm run preview                # Preview production build
 **Built with ❤️ during a 4-week intensive internship using React, TypeScript, and Tailwind CSS**
 
 **🎓 Internship Project Successfully Completed! 🎉**
-
