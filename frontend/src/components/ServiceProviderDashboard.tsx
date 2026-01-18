@@ -214,7 +214,7 @@ const ServiceProviderDashboard = () => {
       let method = 'POST'
 
       if (editingService) {
-        let url = `${API_URL}/api/provider-services/${editingService._id}`
+        url = `${API_URL}/api/provider-services/${editingService._id}`
         method = 'PUT'
       }
 
