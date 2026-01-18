@@ -1,14 +1,14 @@
 // Import required libraries and components
 import { motion } from 'framer-motion' // For smooth animations and transitions
-import { 
+import {
   // Navigation and UI icons for homepage
-  Leaf, 
-  Truck, 
-  Users, 
-  ShoppingCart, 
-  ArrowRight, 
-  Star, 
-  Shield, 
+  Leaf,
+  Truck,
+  Users,
+  ShoppingCart,
+  ArrowRight,
+  Star,
+  Shield,
   Zap,
   Globe,
   TrendingUp,
@@ -81,18 +81,16 @@ const HomePage = () => {
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-green-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-2"
             >
-              <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-                <Leaf className="w-6 h-6 text-white" />
-              </div>
+              <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 rounded-lg object-contain" />
               <span className="text-2xl font-bold text-gray-900">FarmConnect</span>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="hidden md:flex items-center space-x-8"
@@ -110,7 +108,7 @@ const HomePage = () => {
       <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -122,18 +120,18 @@ const HomePage = () => {
               <br />
               <span className="text-gray-800">Agriculture</span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
             >
-              Connect farmers, service providers, and buyers in one seamless platform. 
+              Connect farmers, service providers, and buyers in one seamless platform.
               Streamline your agricultural operations and maximize your profits.
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -154,7 +152,7 @@ const HomePage = () => {
       {/* Stats Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -176,7 +174,7 @@ const HomePage = () => {
       {/* Features Section */}
       <section id="features" className="py-20 bg-gradient-to-br from-green-50 to-emerald-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -187,11 +185,11 @@ const HomePage = () => {
               Why Choose <span className="text-primary-600">FarmConnect</span>?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our platform brings together all stakeholders in the agricultural ecosystem 
+              Our platform brings together all stakeholders in the agricultural ecosystem
               to create a more efficient and profitable farming industry.
             </p>
           </motion.div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <motion.div
@@ -216,7 +214,7 @@ const HomePage = () => {
       {/* Modules Section */}
       <section id="modules" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -227,11 +225,11 @@ const HomePage = () => {
               Choose Your <span className="text-primary-600">Portal</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Access the platform through your dedicated portal designed specifically 
+              Access the platform through your dedicated portal designed specifically
               for your role in the agricultural ecosystem.
             </p>
           </motion.div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {modules.map((module, index) => (
               <motion.div
@@ -247,7 +245,7 @@ const HomePage = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">{module.title}</h3>
                 <p className="text-gray-600 mb-6 text-center">{module.description}</p>
-                
+
                 <ul className="space-y-3 mb-8">
                   {module.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center text-gray-700">
@@ -256,7 +254,7 @@ const HomePage = () => {
                     </li>
                   ))}
                 </ul>
-                
+
                 <a href="/login" className="w-full btn-primary inline-flex items-center justify-center">
                   Access Portal
                   <ArrowRight className="w-5 h-5 ml-2 inline" />
@@ -280,7 +278,7 @@ const HomePage = () => {
               Ready to Transform Your Farming Business?
             </h2>
             <p className="text-xl text-green-100 mb-8 max-w-3xl mx-auto">
-              Join thousands of farmers, service providers, and buyers who are already 
+              Join thousands of farmers, service providers, and buyers who are already
               benefiting from our platform. Start your journey today!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -310,7 +308,7 @@ const HomePage = () => {
                 Revolutionizing agriculture through technology and community.
               </p>
             </div>
-            
+
             <div>
               <h4 className="text-lg font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-gray-400">
@@ -319,7 +317,7 @@ const HomePage = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="text-lg font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-400">
@@ -328,7 +326,7 @@ const HomePage = () => {
                 <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="text-lg font-semibold mb-4">Connect</h4>
               <ul className="space-y-2 text-gray-400">
@@ -338,7 +336,7 @@ const HomePage = () => {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
             <p>&copy; 2024 FarmConnect. All rights reserved.</p>
           </div>
