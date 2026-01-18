@@ -2242,9 +2242,7 @@ const FarmerDashboard = () => {
                 <Menu className="w-6 h-6" />
               </button>
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-                  <Leaf className="w-5 h-5 text-white" />
-                </div>
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-8 h-8 rounded-lg object-contain" />
                 <span className="text-xl font-bold text-gray-900">FarmConnect</span>
               </div>
             </div>

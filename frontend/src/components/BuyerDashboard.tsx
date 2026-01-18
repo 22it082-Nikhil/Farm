@@ -1193,9 +1193,7 @@ const BuyerDashboard = () => {
               </button>
               {/* Logo and brand name */}
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                  <ShoppingCart className="w-5 h-5 text-white" /> {/* Shopping cart icon in logo */}
-                </div>
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-8 h-8 rounded-lg object-contain" />
                 <span className="text-xl font-bold text-gray-900">FarmConnect</span> {/* Brand name */}
               </div>
             </div>
