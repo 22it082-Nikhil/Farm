@@ -2375,7 +2375,9 @@ const FarmerDashboard = () => {
                   <div key={offer._id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
-                        <h4 className="font-semibold text-lg text-gray-900">{offer.buyerName || offer.buyer?.name || offer.provider?.name || offer.providerName || 'User'}</h4>
+                        <h4 className="font-semibold text-lg text-gray-900">
+                          {offer.provider?.name || offer.buyer?.name || offer.providerName || offer.buyerName || 'User'}
+                        </h4>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${offer.status === 'accepted' ? 'bg-green-100 text-green-800' :
                           offer.status === 'rejected' ? 'bg-red-100 text-red-800' :
                             'bg-yellow-100 text-yellow-800'
