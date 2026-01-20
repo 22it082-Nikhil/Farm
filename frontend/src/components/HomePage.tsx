@@ -86,7 +86,7 @@ const HomePage = () => {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center space-x-2"
             >
-              <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 rounded-lg object-contain" />
+              <img src="/logo.png" alt="FarmConnect Logo" className="w-14 h-14 rounded-lg object-contain" />
               <span className="text-2xl font-bold text-gray-900">FarmConnect</span>
             </motion.div>
 
@@ -299,7 +299,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/logo.png" alt="FarmConnect Logo" className="w-8 h-8 rounded-lg object-contain" />
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 rounded-lg object-contain" />
                 <span className="text-xl font-bold">FarmConnect</span>
               </div>
               <p className="text-gray-400">
