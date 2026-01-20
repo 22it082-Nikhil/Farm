@@ -1451,11 +1451,9 @@ const ServiceProviderDashboard = () => {
               >
                 <Menu className="w-6 h-6" />
               </button>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold text-gray-900">FarmConnect</span>
+              <div className="flex items-center">
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-14 h-14 -mr-2 -mt-1.5 rounded-lg object-contain" />
+                <span className="text-2xl font-bold text-gray-900">FarmConnect</span>
               </div>
             </div>
 
