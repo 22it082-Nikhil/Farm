@@ -987,29 +987,41 @@ const BuyerDashboard = () => {
         ) : (
           myOrders.slice(0, 10).map((order) => (
             <div key={order._id} className="bg-white rounded-xl p-5 shadow-md border border-gray-100">
-              {/* Header: Crop & Date */}
-              <div className="flex justify-between items-start mb-3">
+              {/* Header: Crop Type & Date (Left) | Amount (Right) */}
+              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h4 className="font-bold text-gray-900">{order.crop?.name || 'Unknown Crop'}</h4>
-                  <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  <span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-orange-100 text-orange-800 mb-1">
+                    {order.crop?.name || 'Unknown Crop'}
+                  </span>
+                  <p className="text-xs text-gray-500 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${order.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                  order.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
-                  {order.status}
-                </span>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Amount</p>
+                  <p className="text-lg font-bold text-green-600">{order.bidAmount}</p>
+                </div>
               </div>
 
+              {/* Body: Details */}
               <div className="border-t border-b border-gray-50 py-3 my-3 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Farmer:</span>
                   <span className="font-medium text-gray-900">{order.farmer?.name || 'Unknown'}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Amount:</span>
-                  <span className="font-bold text-green-600 text-lg">{order.bidAmount}</span>
+                  <span className="text-gray-500">Quantity:</span>
+                  <span className="font-medium text-gray-600">{order.quantityRequested} {order.crop?.unit || 'units'}</span>
                 </div>
+              </div>
+
+              {/* Footer: Status */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-sm text-gray-500">Status:</span>
+                <span className={`px-2 py-1 rounded-full text-xs font-medium uppercase ${order.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                    order.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                      'bg-yellow-100 text-yellow-800'
+                  }`}>
+                  {order.status}
+                </span>
               </div>
             </div>
           ))
