@@ -6,7 +6,8 @@ import { useClerk } from '@clerk/clerk-react'
 import {
   // Navigation and UI icons
   BarChart3, Bell, CheckCircle, ChevronDown, Crop, FileText, Heart, Home, IndianRupee,
-  LogOut, Menu, Package, Search, Shield, ShoppingBag, User, X, Clock, MapPin, Truck, ChevronRight
+  LogOut, Menu, Package, Search, Shield, ShoppingBag, User, X, Clock, MapPin, Truck, ChevronRight,
+  ShoppingCart, TrendingUp, Trash, UserCheck
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 
