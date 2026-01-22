@@ -1,14 +1,12 @@
+
 // Import required libraries and components
 import { motion } from 'framer-motion' // For smooth animations and transitions
 import { useState, useEffect, useMemo } from 'react' // For managing component state
 import { useClerk } from '@clerk/clerk-react'
 import {
   // Navigation and UI icons
-  ShoppingCart, Users, BarChart3, Calendar, MapPin, IndianRupee,
-  TrendingUp, AlertCircle, CheckCircle, Clock, Star, Settings, LogOut, Plus,
-  Search, Filter, Eye, MessageSquare, FileText, Download, Upload, Crop,
-  Warehouse, Car, UserCheck, Bell, Home, Menu, User, Shield, Heart,
-  Package, Truck, CreditCard, Award, TrendingDown, Trash, FileSpreadsheet
+  BarChart3, Bell, CheckCircle, ChevronDown, Crop, FileText, Heart, Home, IndianRupee,
+  LogOut, Menu, Package, Search, Shield, ShoppingBag, User, X, Clock, MapPin, Truck, ChevronRight
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 
@@ -59,7 +57,7 @@ const BuyerDashboard = () => {
     if (!user?._id) return
 
     try {
-      const res = await fetch(`${API_URL}/api/auth/update/${user._id}`, {
+      const res = await fetch(`${API_URL} /api/auth / update / ${user._id} `, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profileForm)
@@ -97,7 +95,7 @@ const BuyerDashboard = () => {
   const fetchMyOrders = async () => {
     if (!user?._id) return
     try {
-      const response = await fetch(`${API_URL}/api/offers?buyerId=${user._id}`)
+      const response = await fetch(`${API_URL} /api/offers ? buyerId = ${user._id} `)
       if (response.ok) {
         const data = await response.json()
         setMyOrders(data)
@@ -115,7 +113,7 @@ const BuyerDashboard = () => {
       setUser(parsedUser)
       // Fetch data only after user is loaded
       if (parsedUser._id) {
-        fetch(`${API_URL}/api/offers?buyerId=${parsedUser._id}`)
+        fetch(`${API_URL} /api/offers ? buyerId = ${parsedUser._id} `)
           .then(res => res.json())
           .then(data => setMyOrders(data))
           .catch(err => console.error(err))
@@ -134,7 +132,7 @@ const BuyerDashboard = () => {
   const fetchSavedCrops = async () => {
     if (!user?._id) return
     try {
-      const res = await fetch(`${API_URL}/api/users/${user._id}`)
+      const res = await fetch(`${API_URL} /api/users / ${user._id} `)
       if (res.ok) {
         const data = await res.json()
         setSavedCrops(data.savedCrops || [])
@@ -147,7 +145,7 @@ const BuyerDashboard = () => {
   const handleToggleSave = async (cropId: string) => {
     if (!user?._id) return
     try {
-      const res = await fetch(`${API_URL}/api/users/${user._id}/toggle-save`, {
+      const res = await fetch(`${API_URL} /api/users / ${user._id}/toggle-save`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cropId })
