@@ -1184,7 +1184,7 @@ const BuyerDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Left side - Mobile menu button and logo */}
-            <div className="flex items-center space-x-1 md:space-x-4">
+            <div className="flex items-center space-x-0 md:space-x-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)} /* Toggles mobile sidebar */
                 className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
@@ -1192,7 +1192,7 @@ const BuyerDashboard = () => {
                 <Menu className="w-6 h-6" /> {/* Hamburger menu icon for mobile */}
               </button>
               {/* Logo and brand name */}
-              <div className="flex items-center">
+              <div className="flex items-center -ml-3 md:ml-0">
                 <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 -mr-1 md:w-14 md:h-14 md:-mr-2 -mt-1 md:-mt-1.5 rounded-lg object-contain" />
                 <span className="text-lg md:text-2xl font-bold text-gray-900">FarmConnect</span> {/* Brand name */}
               </div>
