@@ -299,8 +299,8 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 -mt-1 rounded-lg object-contain" />
-                <span className="text-xl font-bold">FarmConnect</span>
+                <img src="/logo.png" alt="FarmConnect Logo" className="w-12 h-12 -mr-1 -mt-1 rounded-lg object-contain brightness-0 invert" />
+                <span className="text-xl font-bold text-white">FarmConnect</span>
               </div>
               <p className="text-gray-400">
                 Revolutionizing agriculture through technology and community.
@@ -336,7 +336,7 @@ const HomePage = () => {
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 FarmConnect. All rights reserved.</p>
+            <p>&copy; 2026 FarmConnect. All rights reserved.</p>
           </div>
         </div>
       </footer>
