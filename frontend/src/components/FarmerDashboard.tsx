@@ -436,13 +436,18 @@ const FarmerDashboard = () => {
       });
 
       if (res.ok) {
-        setViewOffersModal(false);
         setActiveTab('chats');
+        // Small delay to ensure the ChatSystem component mounts and fetches
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       } else {
-        alert('Failed to start chat');
+        const errorData = await res.json();
+        alert(`Failed to start chat: ${errorData.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error starting chat:', error);
+      alert('Error starting chat. Please try again.');
     }
   };
 
