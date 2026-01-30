@@ -28,31 +28,54 @@ router.get('/contacts', getUser, async (req, res) => {
         const userRole = req.user.role.toLowerCase();
         console.log(`[Chat] Fetching contacts for User: ${userId}, Role: ${userRole}`);
 
-        let contacts = [];
-        let contactIds = new Set();
+        // Unified Logic: Find ALL offers where this user is involved (as Farmer, Buyer, or Provider)
+        // This decouples chat from the static 'role' field and bases it on actual interactions.
+        const offers = await Offer.find({
+            $or: [
+                { farmer: userId },
+                { buyer: userId },
+                { provider: userId }
+            ]
+        })
+            .populate('farmer', 'name email _id')
+            .populate('buyer', 'name email _id')
+            .populate('provider', 'name email _id');
 
-        // If Farmer: Find Buyers who have active offers with this farmer
-        if (userRole === 'farmer') {
-            const offers = await Offer.find({ farmer: userId }).populate('buyer', 'name email _id');
-            console.log(`[Chat] Found ${offers.length} offers for farmer`);
-            offers.forEach(offer => {
+        console.log(`[Chat] Found ${offers.length} total interactions for User ${userId}`);
+
+        offers.forEach(offer => {
+            // Case 1: I am the Farmer
+            if (offer.farmer && offer.farmer._id.toString() === userId.toString()) {
+                // Add Buyer (if crop offer)
                 if (offer.buyer && !contactIds.has(offer.buyer._id.toString())) {
                     contactIds.add(offer.buyer._id.toString());
                     contacts.push(offer.buyer);
                 }
-            });
-        }
-        // If Buyer: Find Farmers who have bid on my crops (Offers where buyer is me)
-        else if (userRole === 'buyer') {
-            const offers = await Offer.find({ buyer: userId }).populate('farmer', 'name email _id');
-            console.log(`[Chat] Found ${offers.length} offers for buyer (ID: ${userId})`);
-            offers.forEach(offer => {
+                // Add Provider (if service offer)
+                if (offer.provider && !contactIds.has(offer.provider._id.toString())) {
+                    contactIds.add(offer.provider._id.toString());
+                    contacts.push(offer.provider);
+                }
+            }
+
+            // Case 2: I am the Buyer (bidding on crops)
+            if (offer.buyer && offer.buyer._id.toString() === userId.toString()) {
+                // Add Farmer
                 if (offer.farmer && !contactIds.has(offer.farmer._id.toString())) {
                     contactIds.add(offer.farmer._id.toString());
                     contacts.push(offer.farmer);
                 }
-            });
-        }
+            }
+
+            // Case 3: I am the Service Provider (bidding on requests)
+            if (offer.provider && offer.provider._id.toString() === userId.toString()) {
+                // Add Farmer (requester)
+                if (offer.farmer && !contactIds.has(offer.farmer._id.toString())) {
+                    contactIds.add(offer.farmer._id.toString());
+                    contacts.push(offer.farmer);
+                }
+            }
+        });
 
         console.log(`[Chat] Found ${contacts.length} unique contacts`);
 
