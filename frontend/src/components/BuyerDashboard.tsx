@@ -286,7 +286,10 @@ const BuyerDashboard = () => {
 
       const response = await fetch(`${API_URL}/api/offers`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-clerk-user-id': user.clerkId
+        },
         body: JSON.stringify({
           offerType: 'crop',
           farmer: farmerId,

@@ -37,10 +37,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+const User = require('../models/User'); // Import User model
+
 // Create a new offer
 router.post('/', async (req, res) => {
     try {
-        const { farmer, provider, buyer, crop, serviceRequest, offerType, buyerName, providerName, pricePerUnit, quantityRequested, bidAmount, message } = req.body;
+        let { farmer, provider, buyer, crop, serviceRequest, offerType, buyerName, providerName, pricePerUnit, quantityRequested, bidAmount, message } = req.body;
+
+        // CRITICAL FIX: Resolve Buyer ID from Clerk Header if present to ensure it matches Chat System
+        const clerkId = req.headers['x-clerk-user-id'];
+        if (clerkId) {
+            const realUser = await User.findOne({ clerkId });
+            if (realUser) {
+                console.log(`[Offers] Overriding Buyer ID from ${buyer} to ${realUser._id} based on Clerk Auth`);
+                buyer = realUser._id; // Override with trustworthy ID
+            }
+        }
 
         const newOffer = new Offer({
             farmer,
