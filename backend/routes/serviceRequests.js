@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const ServiceRequest = require('../models/ServiceRequest');
+const ProviderService = require('../models/ProviderService');
+const Notification = require('../models/Notification');
 
 // @route   GET api/service-requests
 // @desc    Get all requests for a specific farmer
@@ -45,6 +47,31 @@ router.post('/', async (req, res) => {
             endDate
         });
         const request = await newRequest.save();
+
+        // 🔔 Trigger Notifications for Matching Providers
+        try {
+            // Find all providers who offer this service type
+            const matchingServices = await ProviderService.find({ type: type }).select('provider');
+
+            // Deduplicate provider IDs (in case one provider has multiple services of same type)
+            const providerIds = [...new Set(matchingServices.map(s => s.provider.toString()))];
+
+            // Create notifications
+            const notifications = providerIds.map(providerId => ({
+                recipient: providerId,
+                type: 'new_job',
+                message: `New ${type} Job Posted in ${location}`,
+                relatedId: request._id
+            }));
+
+            if (notifications.length > 0) {
+                await Notification.insertMany(notifications);
+            }
+        } catch (notifErr) {
+            console.error("Error sending notifications:", notifErr);
+            // Don't fail the request if notifications fail
+        }
+
         res.json(request);
     } catch (err) {
         console.error(err.message);

@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Offer = require('../models/Offer');
+const Offer = require('../models/Offer');
 const Crop = require('../models/Crop');
+const Notification = require('../models/Notification');
 
 // Get all offers for a farmer
 // Get all offers (filtered by farmer, provider, or buyer)
@@ -123,6 +125,16 @@ router.put('/:id', async (req, res) => {
             } else {
                 console.warn(`[Offer Accept] Invalid requested quantity: ${requestedQty}`);
             }
+        }
+
+        // Trigger Notification for Bid Acceptance
+        if (status === 'accepted' && offer.provider) {
+            await Notification.create({
+                recipient: offer.provider,
+                type: 'bid_accepted',
+                message: `Your bid for ${offer.offerType === 'service' ? 'Service' : 'Crop'} has been accepted!`,
+                relatedId: offer._id
+            });
         }
 
         res.json(updatedOffer);

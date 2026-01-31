@@ -12,6 +12,7 @@ import {
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
+import ToastNotification from './ToastNotification'
 
 import JobMap from './JobMap' // Import Map Component
 import Calendar from './Calendar' // Import Calendar Component
@@ -26,6 +27,7 @@ const ServiceProviderDashboard = () => {
   // My Bids State
   const [bidViewMode, setBidViewMode] = useState<'list' | 'map' | 'calendar'>('list')
   const [bidFilter, setBidFilter] = useState<'pending' | 'accepted' | 'rejected'>('pending')
+  const [toasts, setToasts] = useState<any[]>([])
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
@@ -33,6 +35,42 @@ const ServiceProviderDashboard = () => {
       setUser(JSON.parse(storedUser))
     }
   }, [])
+
+  // 🔔 Notification Polling
+  useEffect(() => {
+    if (!user?._id) return
+
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/notifications?userId=${user._id}`)
+        if (res.ok) {
+          const notifications = await res.json()
+          notifications.forEach(async (notif: any) => {
+            // Add toast
+            setToasts(prev => [...prev, {
+              id: Date.now() + Math.random(),
+              message: notif.message,
+              type: 'success'
+            }])
+
+            // Mark as read immediately to avoid accumulation
+            await fetch(`${API_URL}/api/notifications/${notif._id}/read`, { method: 'PUT' })
+          })
+        }
+      } catch (err) {
+        console.error("Error fetching notifications", err)
+      }
+    }
+
+    // Checking every 30 seconds
+    fetchNotifications() // Initial check
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => clearInterval(interval)
+  }, [user?._id])
+
+  const removeToast = (id: number) => {
+    setToasts(prev => prev.filter(t => t.id !== id))
+  }
 
   /* ... (omitting unchanged parts for brevity if possible, but replace_file_content needs context) ... */
   /* actually I will use multi_replace for this to be clean */
@@ -1752,6 +1790,18 @@ const ServiceProviderDashboard = () => {
   }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Toast Container */}
+      <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+        {toasts.map(toast => (
+          <div key={toast.id} className="pointer-events-auto">
+            <ToastNotification
+              message={toast.message}
+              type={toast.type}
+              onClose={() => removeToast(toast.id)}
+            />
+          </div>
+        ))}
+      </div>
       {/* Global Printable Report (Visible ONLY when printing) */}
       {renderPrintableReport()}
 
