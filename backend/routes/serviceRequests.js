@@ -37,6 +37,7 @@ router.post('/', async (req, res) => {
             type,
             description,
             location,
+            coordinates: req.body.coordinates,
             duration,
             budget
         });
@@ -60,6 +61,9 @@ router.put('/:id', async (req, res) => {
         request.type = type || request.type;
         request.description = description || request.description;
         request.location = location || request.location;
+        if (req.body.coordinates) {
+            request.coordinates = req.body.coordinates;
+        }
         request.duration = duration || request.duration;
         request.budget = budget || request.budget;
         request.status = status || request.status;
