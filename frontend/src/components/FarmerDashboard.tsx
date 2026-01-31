@@ -247,8 +247,12 @@ const FarmerDashboard = () => {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File too large. Max 5MB.");
+        return;
+      }
       setSelectedImage(file);
-      // Create preview URL
+      // Create preview URL (Base64)
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -257,35 +261,8 @@ const FarmerDashboard = () => {
     }
   };
 
-  // Upload image to server
-  const uploadImage = async (): Promise<string | null> => {
-    if (!selectedImage) return null;
+  // Removed uploadImage function as we are now using Base64 directly
 
-    setUploadingImage(true);
-    const formData = new FormData();
-    formData.append('image', selectedImage);
-
-    try {
-      const res = await fetch(`${API_URL}/api/crops/upload-image`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        return data.imageUrl;
-      } else {
-        alert('Failed to upload image');
-        return null;
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Error uploading image');
-      return null;
-    } finally {
-      setUploadingImage(false);
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setCropForm({ ...cropForm, [e.target.name]: e.target.value })
@@ -294,13 +271,10 @@ const FarmerDashboard = () => {
   const handleSubmitCrop = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      // Upload image if selected
-      let imageUrl = cropForm.image;
-      if (selectedImage) {
-        const uploaded = await uploadImage();
-        if (uploaded) {
-          imageUrl = `${API_URL}${uploaded}`;
-        }
+      // Use Base64 image if selected
+      let finalImage = cropForm.image;
+      if (selectedImage && imagePreview) {
+        finalImage = imagePreview;
       }
 
       const url = currentCrop
@@ -309,7 +283,7 @@ const FarmerDashboard = () => {
 
       const method = currentCrop ? 'PUT' : 'POST'
 
-      const cropData = { ...cropForm, image: imageUrl };
+      const cropData = { ...cropForm, image: finalImage };
       const body = currentCrop
         ? JSON.stringify(cropData)
         : JSON.stringify({ ...cropData, farmer: user._id })
@@ -1299,9 +1273,9 @@ const FarmerDashboard = () => {
           >
             <div className="text-center mb-4">
               <div className="mb-2 flex justify-center">
-                {crop.image && crop.image.startsWith('/') ? (
+                {crop.image && (crop.image.startsWith('/') || crop.image.startsWith('data:image')) ? (
                   <img
-                    src={`${API_URL}${crop.image}`}
+                    src={crop.image.startsWith('/') ? `${API_URL}${crop.image}` : crop.image}
                     alt={crop.name}
                     className="w-24 h-24 object-cover rounded-lg shadow-sm"
                     onError={(e) => {

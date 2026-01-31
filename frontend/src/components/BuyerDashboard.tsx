@@ -558,9 +558,9 @@ const BuyerDashboard = () => {
               {/* Crop header with emoji icon, name, and farmer */}
               <div className="text-center mb-4">
                 <div className="mb-2 flex justify-center">
-                  {crop.image && crop.image.startsWith('/') ? (
+                  {crop.image && (crop.image.startsWith('/') || crop.image.startsWith('data:image')) ? (
                     <img
-                      src={`${API_URL}${crop.image}`}
+                      src={crop.image.startsWith('/') ? `${API_URL}${crop.image}` : crop.image}
                       alt={crop.name}
                       className="w-24 h-24 object-cover rounded-lg shadow-sm"
                       onError={(e) => {
@@ -769,9 +769,9 @@ const BuyerDashboard = () => {
               {/* Saved crop header with emoji icon, name, and farmer */}
               <div className="text-center mb-4">
                 <div className="mb-2 flex justify-center">
-                  {crop.image && crop.image.startsWith('/') ? (
+                  {crop.image && (crop.image.startsWith('/') || crop.image.startsWith('data:image')) ? (
                     <img
-                      src={`${API_URL}${crop.image}`}
+                      src={crop.image.startsWith('/') ? `${API_URL}${crop.image}` : crop.image}
                       alt={crop.name}
                       className="w-24 h-24 object-cover rounded-lg shadow-sm"
                       onError={(e) => {
