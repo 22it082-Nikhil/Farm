@@ -115,13 +115,16 @@ const FarmerDashboard = () => {
   const [selectedRequestForOffers, setSelectedRequestForOffers] = useState<any>(null)
   const [selectedCropForOffers, setSelectedCropForOffers] = useState<any>(null)
 
+  const [locationType, setLocationType] = useState<'text' | 'coords'>('text')
   const [serviceForm, setServiceForm] = useState({
     type: 'Vehicle',
     description: '',
     location: '',
     duration: '',
     budget: '',
-    status: 'pending'
+    status: 'pending',
+    latitude: '',
+    longitude: ''
   })
 
   // Dynamic Rentals State
@@ -499,9 +502,25 @@ const FarmerDashboard = () => {
 
       const method = currentRequest ? 'PUT' : 'POST'
 
+
+      // Prepare body with coordinates if applicable
+      const payload: any = { ...serviceForm }
+
+      // Handle coordinates
+      if (locationType === 'coords' && serviceForm.latitude && serviceForm.longitude) {
+        payload.coordinates = {
+          lat: parseFloat(serviceForm.latitude),
+          lng: parseFloat(serviceForm.longitude)
+        }
+      }
+
+      // Cleanup temporary fields before sending
+      delete payload.latitude
+      delete payload.longitude
+
       const body = currentRequest
-        ? JSON.stringify(serviceForm)
-        : JSON.stringify({ ...serviceForm, farmer: user._id })
+        ? JSON.stringify(payload)
+        : JSON.stringify({ ...payload, farmer: user._id })
 
       const res = await fetch(url, {
         method,
@@ -512,7 +531,7 @@ const FarmerDashboard = () => {
       if (res.ok) {
         setIsServiceModalOpen(false)
         fetchRequests()
-        setServiceForm({ type: 'Vehicle', description: '', location: '', duration: '', budget: '', status: 'pending' })
+        setServiceForm({ type: 'Vehicle', description: '', location: '', duration: '', budget: '', status: 'pending', latitude: '', longitude: '' })
         setCurrentRequest(null)
       }
     } catch (err) {
@@ -532,7 +551,17 @@ const FarmerDashboard = () => {
 
   const openAddServiceModal = () => {
     setCurrentRequest(null)
-    setServiceForm({ type: 'Vehicle', description: '', location: '', duration: '', budget: '', status: 'pending' })
+    setServiceForm({
+      type: 'Vehicle',
+      description: '',
+      location: '',
+      duration: '',
+      budget: '',
+      status: 'pending',
+      latitude: '',
+      longitude: ''
+    })
+    setLocationType('text')
     setIsServiceModalOpen(true)
   }
 
@@ -544,8 +573,18 @@ const FarmerDashboard = () => {
       location: request.location,
       duration: request.duration,
       budget: request.budget,
-      status: request.status
+      status: request.status,
+      latitude: request.coordinates?.lat?.toString() || '',
+      longitude: request.coordinates?.lng?.toString() || ''
     })
+
+    // Set toggle based on whether coordinates exist
+    if (request.coordinates && request.coordinates.lat) {
+      setLocationType('coords')
+    } else {
+      setLocationType('text')
+    }
+
     setIsServiceModalOpen(true)
   }
 
@@ -1605,41 +1644,106 @@ const FarmerDashboard = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={serviceForm.location}
-                    onChange={handleServiceInputChange}
-                    placeholder="e.g. Field A"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    required
-                  />
+              <div className="space-y-4">
+                <div className="flex bg-gray-100 p-1 rounded-lg w-full">
+                  <button
+                    type="button"
+                    onClick={() => setLocationType('text')}
+                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${locationType === 'text' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+                      }`}
+                  >
+                    City / Place Name
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLocationType('coords')}
+                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${locationType === 'coords' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+                      }`}
+                  >
+                    GPS Coordinates
+                  </button>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-                  <input
-                    type="text"
-                    name="duration"
-                    value={serviceForm.duration}
-                    onChange={handleServiceInputChange}
-                    placeholder="e.g. 2 days"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Budget</label>
-                  <input
-                    type="text"
-                    name="budget"
-                    value={serviceForm.budget}
-                    onChange={handleServiceInputChange}
-                    placeholder="e.g. ₹5000"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {locationType === 'coords' ? (
+                    <>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Location Name <span className="text-gray-400 font-normal">(e.g. "North Field")</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="location"
+                          value={serviceForm.location}
+                          onChange={handleServiceInputChange}
+                          placeholder="Short name for the location"
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                        <input
+                          type="text"
+                          name="latitude"
+                          value={serviceForm.latitude}
+                          onChange={handleServiceInputChange}
+                          placeholder="e.g. 21.1458"
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          required={locationType === 'coords'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                        <input
+                          type="text"
+                          name="longitude"
+                          value={serviceForm.longitude}
+                          onChange={handleServiceInputChange}
+                          placeholder="e.g. 79.0882"
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          required={locationType === 'coords'}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={serviceForm.location}
+                        onChange={handleServiceInputChange}
+                        placeholder="e.g. Nagpur, Maharashtra"
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                    <input
+                      type="text"
+                      name="duration"
+                      value={serviceForm.duration}
+                      onChange={handleServiceInputChange}
+                      placeholder="e.g. 2 days"
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Budget</label>
+                    <input
+                      type="text"
+                      name="budget"
+                      value={serviceForm.budget}
+                      onChange={handleServiceInputChange}
+                      placeholder="e.g. ₹5000"
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
                 </div>
               </div>
 
