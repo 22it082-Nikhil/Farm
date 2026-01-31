@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Offer = require('../models/Offer');
-const Offer = require('../models/Offer');
+
 const Crop = require('../models/Crop');
 const Notification = require('../models/Notification');
 
