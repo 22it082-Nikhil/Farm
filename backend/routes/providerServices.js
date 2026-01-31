@@ -37,7 +37,8 @@ router.post('/', async (req, res) => {
             contactPhone,
             contactEmail,
             experience,
-            image: image || '🛠️'
+            image: image || '🛠️',
+            blockedDates: req.body.blockedDates || []
         });
 
         const savedService = await newService.save();

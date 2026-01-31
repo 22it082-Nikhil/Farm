@@ -8,11 +8,13 @@ import {
   TrendingUp, CheckCircle, Clock, Star, Settings, LogOut,
   FileText, Download, Plus, Search, MapPin,
   Bell, Home, Menu, User, MessageSquare,
-  Briefcase, Wrench, IndianRupee, Trash2, Award
+  Briefcase, Wrench, IndianRupee, Trash2, Award, Calendar as CalendarIcon, X
 } from 'lucide-react' // Icon library for consistent UI elements
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
+
 import JobMap from './JobMap' // Import Map Component
+import Calendar from './Calendar' // Import Calendar Component
 
 const ServiceProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')
@@ -80,6 +82,56 @@ const ServiceProviderDashboard = () => {
     }
   }
 
+
+
+
+  // Calendar / Scheduling State
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+  const [schedulingService, setSchedulingService] = useState<any>(null)
+
+  // Helper to open schedule for a service
+  const openScheduleModal = (service: any) => {
+    setSchedulingService(service)
+    setIsScheduleModalOpen(true)
+  }
+
+  // Handle toggling a date as blocked/unblocked
+  const handleDateClick = async (date: Date) => {
+    if (!schedulingService) return
+
+    // Check if date is already blocked
+    const existingBlockIndex = schedulingService.blockedDates?.findIndex((d: any) =>
+      new Date(d.date).toDateString() === date.toDateString()
+    )
+
+    let updatedBlockedDates = [...(schedulingService.blockedDates || [])]
+
+    if (existingBlockIndex >= 0) {
+      // Unblock: Remove date
+      updatedBlockedDates.splice(existingBlockIndex, 1)
+    } else {
+      // Block: Add date
+      updatedBlockedDates.push({ date: date, reason: 'maintenance' })
+    }
+
+    // Optimistic Update
+    const updatedService = { ...schedulingService, blockedDates: updatedBlockedDates }
+    setSchedulingService(updatedService)
+
+    // Backend Update
+    try {
+      await fetch(`${API_URL}/api/provider-services/${schedulingService._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ blockedDates: updatedBlockedDates })
+      })
+      // Also update local list of services
+      setMyServices(prev => prev.map(s => s._id === schedulingService._id ? updatedService : s))
+    } catch (err) {
+      console.error("Failed to update schedule", err)
+      alert("Failed to update schedule")
+    }
+  }
 
   // Profile State
   const [isEditingProfile, setIsEditingProfile] = useState(false)
@@ -658,8 +710,16 @@ const ServiceProviderDashboard = () => {
                   </span>
                 </div>
               </div>
+
               <div className="flex space-x-2">
                 <button onClick={() => handleEditService(service)} className="flex-1 btn-outline text-sm py-2">Edit</button>
+                <button
+                  onClick={() => openScheduleModal(service)}
+                  className="p-2 btn-outline text-blue-600 hover:bg-blue-50 border-blue-200"
+                  title="Manage Schedule"
+                >
+                  <CalendarIcon className="w-4 h-4" />
+                </button>
                 <button onClick={() => handleDeleteService(service._id)} className="p-2 btn-outline text-red-600 hover:bg-red-50 border-red-200">
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -668,7 +728,53 @@ const ServiceProviderDashboard = () => {
           ))
         )}
       </div>
-    </div>
+
+      {/* Schedule Modal */}
+      {
+        isScheduleModalOpen && schedulingService && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+                    <CalendarIcon className="w-6 h-6 mr-2 text-blue-600" />
+                    Availability: {schedulingService.title}
+                  </h2>
+                  <p className="text-sm text-gray-500">Click dates to block/unblock (Red = Blocked)</p>
+                </div>
+                <button onClick={() => setIsScheduleModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="p-6 bg-gray-50">
+                <Calendar
+                  events={[
+                    ...(schedulingService.blockedDates || []).map((d: any) => ({
+                      date: new Date(d.date),
+                      type: 'blocked' as const,
+                      title: d.reason || 'Unavailable'
+                    })),
+                    // Add accepted jobs that might overlap (Global provider view)
+                    ...bids.filter(b => b.status === 'accepted' && b.serviceRequest?.scheduledDate).map(b => ({
+                      date: new Date(b.serviceRequest.scheduledDate),
+                      type: 'job' as const,
+                      title: `Job: ${b.serviceRequest.type}`,
+                      details: b
+                    }))
+                  ]}
+                  onDateClick={handleDateClick}
+                />
+              </div>
+            </motion.div>
+          </div>
+        )
+      }
+    </div >
   )
 
   /* ACCEPTED BIDS SECTION */
@@ -1005,8 +1111,8 @@ const ServiceProviderDashboard = () => {
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-800 flex items-center">
               <span className={`p-1 rounded-lg mr-2 ${bidFilter === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                  bidFilter === 'accepted' ? 'bg-green-100 text-green-800' :
-                    'bg-red-100 text-red-800'
+                bidFilter === 'accepted' ? 'bg-green-100 text-green-800' :
+                  'bg-red-100 text-red-800'
                 }`}>
                 {bidFilter === 'pending' ? <Clock className="w-5 h-5" /> :
                   bidFilter === 'accepted' ? <CheckCircle className="w-5 h-5" /> :

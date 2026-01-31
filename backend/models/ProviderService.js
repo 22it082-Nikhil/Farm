@@ -47,6 +47,16 @@ const ProviderServiceSchema = new mongoose.Schema({
         type: String,
         default: '🛠️'
     },
+    blockedDates: [{
+        date: {
+            type: Date,
+            required: true
+        },
+        reason: {
+            type: String,
+            default: 'maintenance' // 'maintenance', 'personal', 'fully_booked'
+        }
+    }],
     createdAt: {
         type: Date,
         default: Date.now

@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 // @desc    Create a new service request
 // @access  Public
 router.post('/', async (req, res) => {
-    const { farmer, type, description, location, duration, budget } = req.body;
+    const { farmer, type, description, location, duration, budget, scheduledDate, endDate } = req.body;
     try {
         const newRequest = new ServiceRequest({
             farmer,
@@ -38,8 +38,11 @@ router.post('/', async (req, res) => {
             description,
             location,
             coordinates: req.body.coordinates,
+            coordinates: req.body.coordinates,
             duration,
-            budget
+            budget,
+            scheduledDate,
+            endDate
         });
         const request = await newRequest.save();
         res.json(request);
@@ -53,7 +56,7 @@ router.post('/', async (req, res) => {
 // @desc    Update a service request
 // @access  Public
 router.put('/:id', async (req, res) => {
-    const { type, description, location, duration, budget, status } = req.body;
+    const { type, description, location, duration, budget, status, scheduledDate, endDate } = req.body;
     try {
         let request = await ServiceRequest.findById(req.params.id);
         if (!request) return res.status(404).json({ msg: 'Request not found' });
@@ -67,6 +70,8 @@ router.put('/:id', async (req, res) => {
         request.duration = duration || request.duration;
         request.budget = budget || request.budget;
         request.status = status || request.status;
+        request.scheduledDate = scheduledDate || request.scheduledDate;
+        request.endDate = endDate || request.endDate;
 
         await request.save();
         res.json(request);
