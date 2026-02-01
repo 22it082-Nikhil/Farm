@@ -2740,18 +2740,18 @@ const FarmerDashboard = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-3 md:p-6 rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            className="bg-white p-2.5 md:p-6 rounded-xl shadow-lg border border-gray-100 overflow-hidden"
           >
             <div className="flex justify-between items-start">
               <div className="min-w-0 pr-1">
-                <p className="text-xs md:text-sm font-medium text-gray-500 truncate">Top Performer</p>
-                <h3 className="text-lg md:text-3xl font-bold text-gray-900 mt-1 md:mt-2 truncate">₹{stats.highest.price}</h3>
+                <p className="text-[10px] md:text-sm font-medium text-gray-500 truncate">Top Performer</p>
+                <h3 className="text-base md:text-3xl font-bold text-gray-900 mt-0.5 md:mt-2 truncate">₹{stats.highest.price}</h3>
               </div>
               <div className="p-1.5 md:p-3 bg-green-100 rounded-lg shrink-0">
-                <TrendingUp className="w-4 h-4 md:w-6 md:h-6 text-green-600" />
+                <TrendingUp className="w-3.5 h-3.5 md:w-6 md:h-6 text-green-600" />
               </div>
             </div>
-            <p className="text-xs md:text-sm text-green-600 mt-2 md:mt-4 flex items-center truncate">
+            <p className="text-[10px] md:text-sm text-green-600 mt-1.5 md:mt-4 flex items-center truncate">
               <span className="font-bold mr-1 truncate">{stats.highest.crop}</span> high
             </p>
           </motion.div>
@@ -2761,18 +2761,18 @@ const FarmerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-3 md:p-6 rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            className="bg-white p-2.5 md:p-6 rounded-xl shadow-lg border border-gray-100 overflow-hidden"
           >
             <div className="flex justify-between items-start">
               <div className="min-w-0 pr-1">
-                <p className="text-xs md:text-sm font-medium text-gray-500 truncate">Lowest Rate</p>
-                <h3 className="text-lg md:text-3xl font-bold text-gray-900 mt-1 md:mt-2 truncate">₹{stats.lowest.price}</h3>
+                <p className="text-[10px] md:text-sm font-medium text-gray-500 truncate">Lowest Rate</p>
+                <h3 className="text-base md:text-3xl font-bold text-gray-900 mt-0.5 md:mt-2 truncate">₹{stats.lowest.price}</h3>
               </div>
               <div className="p-1.5 md:p-3 bg-red-100 rounded-lg shrink-0">
-                <TrendingDown className="w-4 h-4 md:w-6 md:h-6 text-red-600" />
+                <TrendingDown className="w-3.5 h-3.5 md:w-6 md:h-6 text-red-600" />
               </div>
             </div>
-            <p className="text-xs md:text-sm text-red-600 mt-2 md:mt-4 flex items-center truncate">
+            <p className="text-[10px] md:text-sm text-red-600 mt-1.5 md:mt-4 flex items-center truncate">
               <span className="font-bold mr-1 truncate">{stats.lowest.crop}</span> low
             </p>
           </motion.div>
@@ -2782,18 +2782,18 @@ const FarmerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white p-3 md:p-6 rounded-xl shadow-lg border border-gray-100 col-span-2 md:col-span-1 overflow-hidden"
+            className="bg-white p-2.5 md:p-6 rounded-xl shadow-lg border border-gray-100 col-span-2 md:col-span-1 overflow-hidden"
           >
             <div className="flex justify-between items-start">
               <div className="min-w-0 pr-1">
-                <p className="text-xs md:text-sm font-medium text-gray-500 truncate">Market Average</p>
-                <h3 className="text-lg md:text-3xl font-bold text-gray-900 mt-1 md:mt-2 truncate">₹{stats.avg}</h3>
+                <p className="text-[10px] md:text-sm font-medium text-gray-500 truncate">Market Average</p>
+                <h3 className="text-base md:text-3xl font-bold text-gray-900 mt-0.5 md:mt-2 truncate">₹{stats.avg}</h3>
               </div>
               <div className="p-1.5 md:p-3 bg-blue-100 rounded-lg shrink-0">
-                <BarChart3 className="w-4 h-4 md:w-6 md:h-6 text-blue-600" />
+                <BarChart3 className="w-3.5 h-3.5 md:w-6 md:h-6 text-blue-600" />
               </div>
             </div>
-            <p className="text-xs md:text-sm text-blue-600 mt-2 md:mt-4 flex items-center truncate">
+            <p className="text-[10px] md:text-sm text-blue-600 mt-1.5 md:mt-4 flex items-center truncate">
               Average across all Mandis
             </p>
           </motion.div>
