@@ -283,6 +283,8 @@ const FarmerDashboard = () => {
       fetchReportData()
       fetchMarketPrices()
       fetchTasks()
+      fetchBuyerNeeds()
+      fetchMyBids()
     }
   }, [user])
 
@@ -1489,6 +1491,175 @@ const FarmerDashboard = () => {
       console.error("Failed to simulate offer", err)
     }
   }
+
+  // --- Buyer Requirements (Reverse Bidding) Logic ---
+  const [buyerNeeds, setBuyerNeeds] = useState<any[]>([])
+  const [needBidModalOpen, setNeedBidModalOpen] = useState(false)
+  const [selectedNeed, setSelectedNeed] = useState<any>(null)
+  const [needBidForm, setNeedBidForm] = useState({
+    pricePerUnit: '',
+    message: ''
+  })
+  const [myBids, setMyBids] = useState<any[]>([])
+
+  const fetchBuyerNeeds = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/buyer-needs`)
+      if (res.ok) {
+        setBuyerNeeds(await res.json())
+      }
+    } catch (err) {
+      console.error("Error fetching buyer needs", err)
+    }
+  }
+
+  const fetchMyBids = async () => {
+    if (!user?._id) return
+    try {
+      // Fetch offers made by me (farmer) that are of type 'need_fulfillment' or have a buyerNeed reference
+      // The offers route filters by farmerId
+      const res = await fetch(`${API_URL}/api/offers?farmerId=${user._id}`)
+      if (res.ok) {
+        const data = await res.json()
+        setMyBids(data.filter((o: any) => o.buyerNeed)) // Only need bids
+      }
+    } catch (err) {
+      console.error("Error fetching my bids", err)
+    }
+  }
+
+  const handleOpenBidModal = (need: any) => {
+    setSelectedNeed(need)
+    setNeedBidForm({ pricePerUnit: '', message: '' })
+    setNeedBidModalOpen(true)
+  }
+
+  const handleSubmitBid = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user?._id || !selectedNeed) return
+
+    try {
+      const bidData = {
+        farmer: user._id,
+        buyer: selectedNeed.buyer?._id || selectedNeed.buyer,
+        buyerNeed: selectedNeed._id,
+        offerType: 'need_fulfillment',
+        pricePerUnit: parseFloat(needBidForm.pricePerUnit),
+        quantityRequested: selectedNeed.quantity, // Assume full quantity for now
+        bidAmount: (parseFloat(needBidForm.pricePerUnit) * selectedNeed.quantity).toFixed(2),
+        message: needBidForm.message,
+        providerName: user.name // Farmer Name
+      }
+
+      const res = await fetch(`${API_URL}/api/offers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bidData)
+      })
+
+      if (res.ok) {
+        alert('Bid Placed Successfully! 🚀')
+        setNeedBidModalOpen(false)
+        fetchMyBids()
+      } else {
+        alert('Failed to place bid')
+      }
+    } catch (err) {
+      console.error("Error placing bid", err)
+    }
+  }
+
+  const renderBuyerRequirements = () => (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-8 text-white"
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+          <div>
+            <h2 className="text-3xl font-bold mb-2">Buyer Requirements Market</h2>
+            <p className="text-primary-100 text-lg">Buyers are looking for these crops. Place your bid!</p>
+          </div>
+          <div className="bg-white/20 p-3 rounded-lg backdrop-blur-sm">
+            <TrendingUp className="w-8 h-8 text-white" />
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {buyerNeeds.length === 0 ? (
+          <div className="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
+            <p className="text-gray-500 mb-2">No active requirements from buyers.</p>
+          </div>
+        ) : (
+          buyerNeeds.map((need) => {
+            const myBid = myBids.find(b => b.buyerNeed && (b.buyerNeed._id === need._id || b.buyerNeed === need._id));
+            const hasBid = !!myBid;
+
+            return (
+              <motion.div
+                key={need._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{need.cropName}</h3>
+                    <p className="text-sm text-gray-500">Posted: {new Date(need.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Active
+                  </span>
+                </div>
+
+                <div className="space-y-3 mb-6 flex-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Quantity Needed:</span>
+                    <span className="font-medium text-gray-900">{need.quantity} {need.unit}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Target Price:</span>
+                    <span className="font-medium text-green-600">₹{need.minPrice} - ₹{need.maxPrice}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Deadline:</span>
+                    <span className="font-medium text-red-600">{new Date(need.deadline).toLocaleDateString()}</span>
+                  </div>
+                  {need.description && (
+                    <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded italic">"{need.description}"</p>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  {hasBid ? (
+                    <div className="text-center">
+                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${myBid.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                        myBid.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                        Bid Status: {myBid.status.toUpperCase()}
+                      </span>
+                      <p className="text-xs text-gray-500 mt-1">You bid: ₹{myBid.pricePerUnit}/{need.unit}</p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleOpenBidModal(need)}
+                      className="w-full bg-primary-600 text-white py-2 rounded-lg font-semibold hover:bg-primary-700 transition-colors flex items-center justify-center"
+                    >
+                      <IndianRupee className="w-4 h-4 mr-2" />
+                      Place Bid
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )
+          })
+        )}
+      </div>
+    </div>
+  )
 
   const renderCrops = () => (
     <div className="space-y-6">
@@ -2899,6 +3070,7 @@ const FarmerDashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
+      case 'buyer-needs': return renderBuyerRequirements()
       case 'crops': return renderCrops()
       case 'services': return renderServices()
       case 'available_services': return renderAvailableServices()
@@ -2981,6 +3153,7 @@ const FarmerDashboard = () => {
               <nav className="mt-5 flex-1 px-2 space-y-1">
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
+                  { id: 'buyer-needs', name: 'Buyer Requirements', icon: <ShoppingCart className="w-5 h-5" /> }, // New Tab
                   { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
                   { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
                   { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
@@ -3232,6 +3405,77 @@ const FarmerDashboard = () => {
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all"
               >
                 Schedule Task
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Buyer Need Bid Modal */}
+      {needBidModalOpen && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Place Bid on Requirement</h3>
+              <button onClick={() => setNeedBidModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                ✕
+              </button>
+            </div>
+
+            {selectedNeed && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-4 border border-gray-100">
+                <p className="font-semibold text-gray-800 text-lg mb-1">{selectedNeed.cropName}</p>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Qty: {selectedNeed.quantity} {selectedNeed.unit}</span>
+                  <span className="text-green-600 font-medium">Budget: ₹{selectedNeed.minPrice}-{selectedNeed.maxPrice}</span>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmitBid} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Your Price Per Unit (₹)</label>
+                <input
+                  type="number"
+                  required
+                  value={needBidForm.pricePerUnit}
+                  onChange={(e) => setNeedBidForm({ ...needBidForm, pricePerUnit: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg font-semibold"
+                  placeholder="e.g. 25"
+                />
+              </div>
+
+              {/* Auto-calculate Total */}
+              {selectedNeed && needBidForm.pricePerUnit && (
+                <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-100">
+                  <span className="text-sm text-green-800 font-medium">Total Bid Value:</span>
+                  <span className="text-xl font-bold text-green-700">
+                    ₹{(parseFloat(needBidForm.pricePerUnit) * selectedNeed.quantity).toFixed(2)}
+                  </span>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+                <textarea
+                  value={needBidForm.message}
+                  onChange={(e) => setNeedBidForm({ ...needBidForm, message: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="e.g. I have 500kg of premium organic wheat ready for dispatch."
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+              >
+                <IndianRupee className="w-5 h-5 mr-2" />
+                Submit Bid
               </button>
             </form>
           </motion.div>
