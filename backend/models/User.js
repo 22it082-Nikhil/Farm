@@ -40,6 +40,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    latitude: {
+        type: String,
+        default: ''
+    },
+    longitude: {
+        type: String,
+        default: ''
+    },
     bio: {
         type: String,
         default: ''

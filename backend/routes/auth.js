@@ -139,6 +139,8 @@ router.put('/update/:id', async (req, res) => {
     if (location) userFields.location = location;
     if (farmSize) userFields.farmSize = farmSize;
     if (bio) userFields.bio = bio;
+    if (req.body.latitude) userFields.latitude = req.body.latitude;
+    if (req.body.longitude) userFields.longitude = req.body.longitude;
 
     try {
         let user = await User.findById(req.params.id);

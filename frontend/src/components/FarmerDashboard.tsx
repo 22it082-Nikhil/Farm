@@ -969,7 +969,9 @@ const FarmerDashboard = () => {
     phone: '',
     location: '',
     farmSize: '',
-    bio: ''
+    bio: '',
+    latitude: '',
+    longitude: ''
   })
 
   // Initialize Profile Form when User loads
@@ -981,7 +983,9 @@ const FarmerDashboard = () => {
         phone: user.phone || '',
         location: user.location || '',
         farmSize: user.farmSize || '',
-        bio: user.bio || ''
+        bio: user.bio || '',
+        latitude: user.latitude || '',
+        longitude: user.longitude || ''
       })
     }
   }, [user])
@@ -1115,6 +1119,28 @@ const FarmerDashboard = () => {
                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                  <input
+                    type="text"
+                    name="latitude"
+                    value={profileForm.latitude}
+                    onChange={handleProfileInputChange}
+                    placeholder="e.g. 21.1458"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                  <input
+                    type="text"
+                    name="longitude"
+                    value={profileForm.longitude}
+                    onChange={handleProfileInputChange}
+                    placeholder="e.g. 79.0882"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Bio / Farm Description</label>
@@ -1160,6 +1186,34 @@ const FarmerDashboard = () => {
                   <p className="font-semibold text-gray-900 border-b pb-2">{user?.farmSize || 'Not provided'}</p>
                 </div>
               </div>
+
+              {/* Location Map Display */}
+              {user?.latitude && user?.longitude && (
+                <div className="mt-6">
+                  <p className="text-sm text-gray-500 mb-2">Field Location (Map)</p>
+                  <div className="bg-gray-100 rounded-xl overflow-hidden h-64 border border-gray-200 relative group">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      scrolling="no"
+                      marginHeight={0}
+                      marginWidth={0}
+                      src={`https://maps.google.com/maps?q=${user.latitude},${user.longitude}&z=15&output=embed`}
+                      className="w-full h-full"
+                    ></iframe>
+                    <a
+                      href={`https://www.google.com/maps?q=${user.latitude},${user.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg shadow-md text-sm font-bold text-gray-700 hover:text-primary-600 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0"
+                    >
+                      Open in Google Maps
+                    </a>
+                  </div>
+                </div>
+              )}
+
               <div className="mt-4">
                 <p className="text-sm text-gray-500 mb-1">About Farm</p>
                 <div className="bg-gray-50 p-4 rounded-lg text-gray-700 italic border border-gray-200">
