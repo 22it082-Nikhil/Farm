@@ -111,6 +111,15 @@ const BuyerDashboard = () => {
   const [activeNeedOffers, setActiveNeedOffers] = useState<any[]>([])
   const [isOffersModalOpen, setIsOffersModalOpen] = useState(false)
 
+  // Order Details Handling
+  const [selectedOrder, setSelectedOrder] = useState<any>(null)
+  const [viewOrderModalOpen, setViewOrderModalOpen] = useState(false)
+
+  const handleViewOrderDetails = (order: any) => {
+    setSelectedOrder(order)
+    setViewOrderModalOpen(true)
+  }
+
   const fetchBuyerNeeds = async () => {
     if (!user?._id) return
     try {
@@ -984,7 +993,12 @@ const BuyerDashboard = () => {
                     Chat with Farmer
                   </button>
                   <button className="btn-outline text-sm py-2 px-4">Track Order</button> {/* Track order button */}
-                  <button className="btn-primary text-sm py-2 px-4">View Details</button> {/* View order details button */}
+                  <button
+                    onClick={() => handleViewOrderDetails(order)}
+                    className="btn-primary text-sm py-2 px-4"
+                  >
+                    View Details
+                  </button> {/* View order details button */}
                   <button
                     onClick={async () => {
                       if (window.confirm('Are you sure you want to cancel this order?')) {
@@ -1384,11 +1398,11 @@ const BuyerDashboard = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden"
+        className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-8 text-white relative overflow-hidden"
       >
         <div className="relative z-10">
           <h2 className="text-3xl font-bold mb-2">Market Price Trends 📈</h2>
-          <p className="text-blue-100 text-lg">Analyze historical price data to make smarter buying decisions.</p>
+          <p className="text-orange-100 text-lg">Analyze historical price data to make smarter buying decisions.</p>
         </div>
         <div className="absolute right-0 bottom-0 opacity-10">
           <TrendingUp className="w-64 h-64 text-white" />
@@ -2099,6 +2113,143 @@ const BuyerDashboard = () => {
           </div>
         )
       }
+
+      {/* View Order Details Modal */}
+      {viewOrderModalOpen && selectedOrder && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl p-0 max-w-2xl w-full shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6 text-white flex justify-between items-center">
+              <div>
+                <h3 className="text-2xl font-bold flex items-center">
+                  <Package className="w-6 h-6 mr-2" />
+                  Order #{selectedOrder._id.substr(-6).toUpperCase()}
+                </h3>
+                <p className="text-orange-100 text-sm mt-1">Placed on {new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
+              </div>
+              <button onClick={() => setViewOrderModalOpen(false)} className="text-white hover:text-orange-100 bg-white/20 rounded-full p-2 transition-colors">
+                <LogOut className="w-5 h-5 rotate-180" /> {/* Close Icon */}
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto">
+              {/* Farmer Profile Section */}
+              <div className="bg-orange-50 rounded-xl p-6 border border-orange-100 mb-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                  <User className="w-5 h-5 mr-2 text-orange-600" />
+                  Farmer Profile
+                </h4>
+                <div className="flex items-start md:items-center space-x-4">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-orange-600 text-2xl font-bold border-2 border-orange-200 shadow-sm">
+                    {selectedOrder.farmer?.name?.charAt(0).toUpperCase() || 'F'}
+                  </div>
+                  <div className="flex-1">
+                    <h5 className="text-xl font-bold text-gray-900">{selectedOrder.farmer?.name || 'Verified Farmer'}</h5>
+                    <div className="flex flex-wrap gap-3 mt-2">
+                      <span className="inline-flex items-center text-sm text-gray-600 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                        <MapPin className="w-4 h-4 mr-1 text-red-500" />
+                        {selectedOrder.farmer?.location || 'Gujarat, India'}
+                      </span>
+                      <span className="inline-flex items-center text-sm text-gray-600 bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+                        <UserCheck className="w-4 h-4 mr-1 text-green-500" />
+                        Verified Account
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleStartChat(selectedOrder._id);
+                      setViewOrderModalOpen(false);
+                    }}
+                    className="hidden md:flex items-center bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Chat
+                  </button>
+                </div>
+              </div>
+
+              {/* Order Status Timeline */}
+              <div className="mb-8">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Tracking Status</h4>
+                <div className="relative">
+                  {/* Progress Bar Background */}
+                  <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full z-0"></div>
+
+                  {/* Active Progress Bar */}
+                  <div
+                    className="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-green-500 rounded-full z-0 transition-all duration-500"
+                    style={{
+                      width: selectedOrder.status === 'delivered' ? '100%' :
+                        selectedOrder.status === 'shipped' ? '75%' :
+                          selectedOrder.status === 'accepted' ? '50%' : '15%'
+                    }}
+                  ></div>
+
+                  <div className="relative z-10 flex justify-between w-full">
+                    {['pending', 'accepted', 'shipped', 'delivered'].map((step, index) => {
+                      const stepIndex = ['pending', 'accepted', 'shipped', 'delivered'].indexOf(step);
+                      const currentIndex = ['pending', 'accepted', 'shipped', 'delivered'].indexOf(selectedOrder.status);
+                      const isCompleted = currentIndex >= stepIndex;
+                      const isCurrent = currentIndex === stepIndex;
+
+                      return (
+                        <div key={step} className="flex flex-col items-center">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center border-4 transition-all duration-300 ${isCompleted ? 'bg-green-500 border-green-200 text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'
+                            } ${isCurrent ? 'scale-110 ring-4 ring-green-100' : ''}`}>
+                            {isCompleted ? <CheckCircle className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                          </div>
+                          <span className={`text-xs mt-2 font-medium capitalize ${isCompleted ? 'text-green-700' : 'text-gray-400'}`}>
+                            {step}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Summary Grid */}
+              <h4 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Crop Details</p>
+                  <p className="text-lg font-bold text-gray-900">{selectedOrder.crop?.name || 'Unknown Crop'}</p>
+                  <p className="text-sm text-gray-600">{selectedOrder.quantityRequested} {selectedOrder.crop?.unit || 'units'}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Payment Status</p>
+                  <p className="text-lg font-bold text-green-600">{selectedOrder.bidAmount}</p>
+                  <p className="text-sm text-gray-600 flex items-center">
+                    <Shield className="w-3 h-3 mr-1 text-green-500" /> Secure Transaction
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-gray-50 p-4 border-t border-gray-100 flex justify-end space-x-3">
+              <button
+                onClick={() => setViewOrderModalOpen(false)}
+                className="px-5 py-2 rounded-lg text-gray-600 hover:bg-gray-100 font-medium transition-colors"
+              >
+                Close
+              </button>
+              {selectedOrder.status === 'accepted' || selectedOrder.status === 'shipped' ? (
+                <button className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow-md hover:bg-green-700 transition-colors flex items-center">
+                  <Package className="w-4 h-4 mr-2" />
+                  Track Shipment
+                </button>
+              ) : null}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div >
   )
 }

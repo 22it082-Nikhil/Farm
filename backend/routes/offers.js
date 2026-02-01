@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
                 path: 'buyerNeed',
                 populate: { path: 'buyer', select: 'name email phone' }
             }) // Populate requirement details with nested buyer
-            .populate('farmer', 'name email phone') // Populate farmer details
+            .populate('farmer', 'name email phone location') // Populate farmer details with location
             .populate('provider', 'name email phone') // Populate provider details
             .populate('buyer', 'name email phone') // Populate buyer details
             .sort({ createdAt: -1 });
