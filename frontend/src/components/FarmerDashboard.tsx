@@ -2720,7 +2720,7 @@ const FarmerDashboard = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 sm:p-8 text-white"
+          className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 text-white"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div>
@@ -2735,24 +2735,24 @@ const FarmerDashboard = () => {
         </motion.div>
 
         {/* Market Summary Cards (Matching Reports Style) */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Highest Price Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white p-2.5 md:p-6 rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
           >
             <div className="flex justify-between items-start">
-              <div className="min-w-0 pr-1">
-                <p className="text-[10px] md:text-sm font-medium text-gray-500 truncate">Top Performer</p>
-                <h3 className="text-base md:text-3xl font-bold text-gray-900 mt-0.5 md:mt-2 truncate">₹{stats.highest.price}</h3>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Top Performer</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.highest.price}</h3>
               </div>
-              <div className="p-1.5 md:p-3 bg-green-100 rounded-lg shrink-0">
-                <TrendingUp className="w-3.5 h-3.5 md:w-6 md:h-6 text-green-600" />
+              <div className="p-3 bg-green-100 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            <p className="text-[10px] md:text-sm text-green-600 mt-1.5 md:mt-4 flex items-center truncate">
-              <span className="font-bold mr-1 truncate">{stats.highest.crop}</span> high
+            <p className="text-sm text-green-600 mt-4 flex items-center">
+              <span className="font-bold mr-1">{stats.highest.crop}</span> is strictly high
             </p>
           </motion.div>
 
@@ -2761,19 +2761,19 @@ const FarmerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-2.5 md:p-6 rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
           >
             <div className="flex justify-between items-start">
-              <div className="min-w-0 pr-1">
-                <p className="text-[10px] md:text-sm font-medium text-gray-500 truncate">Lowest Rate</p>
-                <h3 className="text-base md:text-3xl font-bold text-gray-900 mt-0.5 md:mt-2 truncate">₹{stats.lowest.price}</h3>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Lowest Rate</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.lowest.price}</h3>
               </div>
-              <div className="p-1.5 md:p-3 bg-red-100 rounded-lg shrink-0">
-                <TrendingDown className="w-3.5 h-3.5 md:w-6 md:h-6 text-red-600" />
+              <div className="p-3 bg-red-100 rounded-lg">
+                <TrendingDown className="w-6 h-6 text-red-600" />
               </div>
             </div>
-            <p className="text-[10px] md:text-sm text-red-600 mt-1.5 md:mt-4 flex items-center truncate">
-              <span className="font-bold mr-1 truncate">{stats.lowest.crop}</span> low
+            <p className="text-sm text-red-600 mt-4 flex items-center">
+              <span className="font-bold mr-1">{stats.lowest.crop}</span> is currently low
             </p>
           </motion.div>
 
@@ -2782,18 +2782,18 @@ const FarmerDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white p-2.5 md:p-6 rounded-xl shadow-lg border border-gray-100 col-span-2 md:col-span-1 overflow-hidden"
+            className="bg-white p-6 rounded-xl shadow-lg border border-gray-100"
           >
             <div className="flex justify-between items-start">
-              <div className="min-w-0 pr-1">
-                <p className="text-[10px] md:text-sm font-medium text-gray-500 truncate">Market Average</p>
-                <h3 className="text-base md:text-3xl font-bold text-gray-900 mt-0.5 md:mt-2 truncate">₹{stats.avg}</h3>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Market Average</p>
+                <h3 className="text-3xl font-bold text-gray-900 mt-2">₹{stats.avg}</h3>
               </div>
-              <div className="p-1.5 md:p-3 bg-blue-100 rounded-lg shrink-0">
-                <BarChart3 className="w-3.5 h-3.5 md:w-6 md:h-6 text-blue-600" />
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <BarChart3 className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-            <p className="text-[10px] md:text-sm text-blue-600 mt-1.5 md:mt-4 flex items-center truncate">
+            <p className="text-sm text-blue-600 mt-4 flex items-center">
               Average across all Mandis
             </p>
           </motion.div>
@@ -2801,10 +2801,10 @@ const FarmerDashboard = () => {
 
         {/* Detailed Market Rates Table (Matching Reports Style) */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-base md:text-lg font-semibold text-gray-900">Market Rates Analysis</h3>
           </div>
-          <div className="p-0 sm:p-6"> {/* Removed padding on mobile for full width table feel */}
+          <div className="p-6"> {/* Removed padding on mobile for full width table feel */}
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -3020,7 +3020,7 @@ const FarmerDashboard = () => {
         </div>
 
         <div className="flex-1 lg:ml-0">
-          <main className="py-4 px-2 sm:px-6 lg:px-8">
+          <main className="py-6 px-4 sm:px-6 lg:px-8">
             {renderContent()}
           </main>
         </div>
