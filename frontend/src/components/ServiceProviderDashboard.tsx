@@ -1656,6 +1656,8 @@ const ServiceProviderDashboard = () => {
                   email: user?.email || '',
                   phone: user?.phone || '',
                   location: user?.location || '',
+                  latitude: user?.latitude || '',
+                  longitude: user?.longitude || '',
                   bio: user?.bio || '',
                 });
               }
