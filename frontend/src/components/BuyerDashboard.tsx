@@ -1177,10 +1177,10 @@ const BuyerDashboard = () => {
             ${myOrders.length > 0 ? myOrders.map((order) => `
               <tr>
                 <td>${new Date(order.createdAt).toLocaleDateString()}</td>
-                <td><strong>${order.crop?.name || 'Unknown'}</strong></td>
+                <td><strong>${order.crop?.name || (order.buyerNeed && typeof order.buyerNeed === 'object' ? order.buyerNeed.cropName : 'Buyer Requirement') || 'Unknown'}</strong></td>
                 <td>${order.farmer?.name || 'Unknown Farmer'}</td>
-                <td>${order.quantityRequested} ${order.crop?.unit || 'units'}</td>
-                <td style="font-weight: bold;">${order.bidAmount}</td>
+                <td>${order.quantityRequested || order.quantity} ${order.crop?.unit || (order.buyerNeed && typeof order.buyerNeed === 'object' ? order.buyerNeed.unit : 'units')}</td>
+                <td style="font-weight: bold;">${(!order.bidAmount?.toString().startsWith('₹') ? '₹' : '') + order.bidAmount}</td>
                 <td><span class="status-pil status-${order.status}">${order.status}</span></td>
               </tr>
             `).join('') : '<tr><td colspan="6" style="text-align:center; padding: 20px;">No orders found.</td></tr>'}
@@ -1273,9 +1273,13 @@ const BuyerDashboard = () => {
                 myOrders.slice(0, 10).map((order) => (
                   <tr key={order._id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-6">{new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td className="py-3 px-6 font-medium text-gray-900">{order.crop?.name || 'Unknown'}</td>
+                    <td className="py-3 px-6 font-medium text-gray-900">
+                      {order.crop?.name || (order.buyerNeed && typeof order.buyerNeed === 'object' ? order.buyerNeed.cropName : 'Buyer Requirement') || 'Unknown'}
+                    </td>
                     <td className="py-3 px-6">{order.farmer?.name || 'Unknown'}</td>
-                    <td className="py-3 px-6 font-bold text-green-600">{order.bidAmount}</td>
+                    <td className="py-3 px-6 font-bold text-green-600">
+                      {(!order.bidAmount?.toString().startsWith('₹') ? '₹' : '') + order.bidAmount}
+                    </td>
                     <td className="py-3 px-6">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${order.status === 'accepted' ? 'bg-green-100 text-green-800' :
                         order.status === 'rejected' ? 'bg-red-100 text-red-800' :
@@ -1309,13 +1313,15 @@ const BuyerDashboard = () => {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <span className="px-2.5 py-1 inline-flex text-xs font-semibold rounded-full bg-orange-100 text-orange-800 mb-1">
-                    {order.crop?.name || 'Unknown Crop'}
+                    {order.crop?.name || (order.buyerNeed && typeof order.buyerNeed === 'object' ? order.buyerNeed.cropName : 'Buyer Requirement') || 'Unknown Crop'}
                   </span>
                   <p className="text-xs text-gray-500 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Amount</p>
-                  <p className="text-lg font-bold text-green-600">{order.bidAmount}</p>
+                  <p className="text-lg font-bold text-green-600">
+                    {(!order.bidAmount?.toString().startsWith('₹') ? '₹' : '') + order.bidAmount}
+                  </p>
                 </div>
               </div>
 
