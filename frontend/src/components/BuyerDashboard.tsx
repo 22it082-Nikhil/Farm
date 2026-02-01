@@ -818,24 +818,23 @@ const BuyerDashboard = () => {
                 "{need.description || 'No description provided.'}"
               </p>
 
-              <div className="flex space-x-2 pt-2 border-t border-gray-100">
+              <div className="flex space-x-3 pt-4 border-t border-gray-100">
                 <button
                   onClick={() => handleViewOffers(need._id)}
-                  className="flex-1 flex justify-center items-center py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors text-sm font-medium border border-blue-100 mr-2"
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm py-2 px-4 rounded-lg font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center"
                 >
                   <Eye className="w-4 h-4 mr-2" />
-                  View Offers
+                  Offers
                 </button>
                 <button
                   onClick={() => handleEditNeed(need)}
-                  className="flex-1 flex justify-center items-center py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium border border-gray-200 mr-2"
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center"
                 >
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit
+                  <Edit className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDeleteNeed(need._id)}
-                  className="flex-1 flex justify-center items-center py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium border border-red-100"
+                  className="px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center"
                 >
                   <Trash className="w-4 h-4" />
                 </button>
