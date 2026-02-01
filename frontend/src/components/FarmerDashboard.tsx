@@ -2656,10 +2656,10 @@ const FarmerDashboard = () => {
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Live Market Prices</h2>
-            <p className="text-primary-100 text-lg">Real-time Mandi rates for key crops</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">Live Market Prices</h2>
+            <p className="text-primary-100 text-sm sm:text-lg">Real-time Mandi rates for key crops</p>
           </div>
-          <div className="bg-white text-primary-600 px-4 py-2 rounded-xl font-bold shadow-lg flex items-center">
+          <div className="bg-white text-primary-600 px-4 py-2 rounded-xl font-bold shadow-lg flex items-center text-sm sm:text-base w-full sm:w-auto justify-center sm:justify-start">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
             Live Updates
           </div>
@@ -2673,7 +2673,7 @@ const FarmerDashboard = () => {
         </div>
         <div className="relative z-10">
           <h3 className="text-sm text-gray-400 font-medium uppercase tracking-wider mb-2">Market Trending</h3>
-          <div className="flex space-x-8 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex space-x-4 sm:space-x-8 overflow-x-auto pb-2 scrollbar-hide">
             {marketPrices.slice(0, 5).map((item, idx) => (
               <div key={idx} className="flex-shrink-0">
                 <div className="flex items-center space-x-2">
