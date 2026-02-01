@@ -1759,6 +1759,7 @@ const BuyerDashboard = () => {
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> }, // Dashboard overview
                   { id: 'requirements', name: 'Post Requirements', icon: <ClipboardList className="w-5 h-5" /> }, // New Req Tab
+                  { id: 'trends', name: 'Market Trends', icon: <TrendingUp className="w-5 h-5" /> }, // Market Trends
                   { id: 'crops', name: 'Browse Crops', icon: <Crop className="w-5 h-5" /> }, // Available crops
                   { id: 'orders', name: 'My Orders', icon: <Package className="w-5 h-5" /> }, // Order management
                   { id: 'saved', name: 'Saved Items', icon: <Heart className="w-5 h-5" /> }, // Wishlist
