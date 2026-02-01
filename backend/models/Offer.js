@@ -58,6 +58,23 @@ const offerSchema = new mongoose.Schema({
         enum: ['pending', 'accepted', 'rejected', 'completed'],
         default: 'pending'
     },
+    // Dynamic Tracking History
+    trackingUpdates: [{
+        status: {
+            type: String,
+            enum: ['pending', 'accepted', 'packed', 'shipped', 'out_for_delivery', 'delivered'],
+            required: true
+        },
+        location: {
+            type: String,
+            required: true
+        },
+        note: String,
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     message: {
         type: String
     },

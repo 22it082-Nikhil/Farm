@@ -8,7 +8,8 @@ import {
   TrendingUp, CheckCircle, Clock, LogOut,
   Search, FileText, Crop,
   Package, Bell, Home, Menu, User, Shield, Heart,
-  MapPin, UserCheck, Trash, MessageSquare, ClipboardList, Plus, Edit, Eye
+  MapPin, UserCheck, Trash, MessageSquare, ClipboardList, Plus, Edit, Eye,
+  Truck, X
 } from 'lucide-react' // Icon library for consistent UI elements
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, Line
@@ -114,10 +115,48 @@ const BuyerDashboard = () => {
   // Order Details Handling
   const [selectedOrder, setSelectedOrder] = useState<any>(null)
   const [viewOrderModalOpen, setViewOrderModalOpen] = useState(false)
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false)
 
   const handleViewOrderDetails = (order: any) => {
     setSelectedOrder(order)
     setViewOrderModalOpen(true)
+  }
+
+  const handleTrackShipment = (order: any) => {
+    setSelectedOrder(order)
+    setIsTrackingModalOpen(true)
+  }
+
+  const simulateTrackingUpdate = async (status: string, note: string) => {
+    if (!selectedOrder?._id) return;
+    try {
+      const locations = ['Local Hub, Gujarat', 'Regional Center, Mumbai', 'Distribution Hub, Pune', 'Out for Delivery'];
+      const randomLoc = locations[Math.floor(Math.random() * locations.length)];
+
+      await fetch(`${API_URL}/api/offers/${selectedOrder._id}/tracking`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          status,
+          location: randomLoc,
+          note
+        })
+      });
+      // Refresh orders to see update
+      fetchMyOrders();
+      // Update local selected order state manually or refetch
+      setSelectedOrder({
+        ...selectedOrder,
+        status: ['accepted', 'shipped', 'delivered'].includes(status) ? status : selectedOrder.status,
+        trackingUpdates: [
+          ...(selectedOrder.trackingUpdates || []),
+          { status, location: randomLoc, note, timestamp: new Date().toISOString() }
+        ]
+      });
+      alert(`Simulated update: ${status}`);
+    } catch (err) {
+      console.error("Simulation failed", err);
+    }
   }
 
   const fetchBuyerNeeds = async () => {
@@ -994,7 +1033,7 @@ const BuyerDashboard = () => {
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Chat with Farmer
                   </button>
-                  <button className="btn-outline text-sm py-2 px-4">Track Order</button> {/* Track order button */}
+
                   <button
                     onClick={() => handleViewOrderDetails(order)}
                     className="btn-primary text-sm py-2 px-4"
@@ -2238,12 +2277,14 @@ const BuyerDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Crop Details</p>
-                  <p className="text-lg font-bold text-gray-900">{selectedOrder.crop?.name || 'Unknown Crop'}</p>
-                  <p className="text-sm text-gray-600">{selectedOrder.quantityRequested} {selectedOrder.crop?.unit || 'units'}</p>
+                  <p className="text-lg font-bold text-gray-900">{selectedOrder.crop?.name || selectedOrder.buyerNeed?.cropName || 'Custom'} Order</p>
+                  <p className="text-sm text-gray-600">{selectedOrder.quantityRequested} {selectedOrder.crop?.unit || selectedOrder.buyerNeed?.unit || 'units'}</p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Payment Status</p>
-                  <p className="text-lg font-bold text-green-600">{selectedOrder.bidAmount}</p>
+                  <p className="text-lg font-bold text-green-600">
+                    {selectedOrder.bidAmount?.toString().startsWith('₹') ? selectedOrder.bidAmount : `₹${selectedOrder.bidAmount}`}
+                  </p>
                   <p className="text-sm text-gray-600 flex items-center">
                     <Shield className="w-3 h-3 mr-1 text-green-500" /> Secure Transaction
                   </p>
@@ -2261,11 +2302,80 @@ const BuyerDashboard = () => {
                 Close
               </button>
               {selectedOrder.status === 'accepted' || selectedOrder.status === 'shipped' ? (
-                <button className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow-md hover:bg-green-700 transition-colors flex items-center">
+                <button
+                  onClick={() => {
+                    /* Close details modal and open tracking modal */
+                    setViewOrderModalOpen(false);
+                    handleTrackShipment(selectedOrder);
+                  }}
+                  className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow-md hover:bg-green-700 transition-colors flex items-center"
+                >
                   <Package className="w-4 h-4 mr-2" />
                   Track Shipment
                 </button>
               ) : null}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Track Shipment Modal */}
+      {isTrackingModalOpen && selectedOrder && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl p-0 max-w-lg w-full shadow-lg overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white flex justify-between items-center">
+              <div>
+                <h3 className="text-xl font-bold flex items-center">
+                  <Truck className="w-5 h-5 mr-2" />
+                  Track Packet #{selectedOrder._id.substr(-6).toUpperCase()}
+                </h3>
+                <p className="text-blue-100 text-sm">Via FarmConnect Logistics</p>
+              </div>
+              <button onClick={() => setIsTrackingModalOpen(false)} className="text-white bg-white/20 hover:bg-white/30 rounded-full p-2">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto flex-1">
+              {(!selectedOrder.trackingUpdates || selectedOrder.trackingUpdates.length === 0) ? (
+                <div className="text-center py-8">
+                  <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <Package className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 font-medium">Order Placed. Waiting for updates.</p>
+                  <p className="text-xs text-gray-400 mt-1">Updates will appear here once the farmer ships the item.</p>
+                </div>
+              ) : (
+                <div className="relative border-l-2 border-gray-200 ml-4 space-y-8">
+                  {selectedOrder.trackingUpdates.map((update: any, idx: number) => (
+                    <div key={idx} className="relative pl-6">
+                      <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-blue-600 ring-4 ring-white"></div>
+                      <p className="text-sm text-gray-400 font-mono mb-1">{new Date(update.timestamp).toLocaleString()}</p>
+                      <h4 className="text-lg font-bold text-gray-800 capitalize">{update.status.replace(/_/g, ' ')}</h4>
+                      <p className="text-gray-600">{update.note || 'Processing update...'}</p>
+                      <div className="flex items-center text-xs text-blue-600 mt-2 font-medium bg-blue-50 inline-block px-2 py-1 rounded">
+                        <MapPin className="w-3 h-3 mr-1" />
+                        {update.location}
+                      </div>
+                    </div>
+                  )).reverse()}
+                </div>
+              )}
+
+              {/* Simulation Tools (Dev Only) */}
+              <div className="mt-8 border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-3 font-bold">⚠️ Dev Simulation Tools</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button onClick={() => simulateTrackingUpdate('packed', 'Item packed securely at farm')} className="text-xs bg-gray-100 hover:bg-gray-200 p-2 rounded">Simulate: Packed</button>
+                  <button onClick={() => simulateTrackingUpdate('shipped', 'Picked up by Logistics Partner')} className="text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-800 p-2 rounded">Simulate: Shipped</button>
+                  <button onClick={() => simulateTrackingUpdate('out_for_delivery', 'Driver is out for delivery')} className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 p-2 rounded">Simulate: Out For Delivery</button>
+                  <button onClick={() => simulateTrackingUpdate('delivered', 'Package delivered via OTP')} className="text-xs bg-green-100 hover:bg-green-200 text-green-800 p-2 rounded">Simulate: Delivered</button>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>

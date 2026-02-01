@@ -184,4 +184,34 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// Add a tracking update to an order
+router.post('/:id/tracking', async (req, res) => {
+    try {
+        const { status, location, note } = req.body;
+        const offer = await Offer.findById(req.params.id);
+
+        if (!offer) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Add to history
+        offer.trackingUpdates.push({
+            status,
+            location,
+            note,
+            timestamp: new Date()
+        });
+
+        // Update main status if it maps to a main status
+        if (['accepted', 'shipped', 'delivered'].includes(status)) {
+            offer.status = status;
+        }
+
+        await offer.save();
+        res.json(offer);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;
