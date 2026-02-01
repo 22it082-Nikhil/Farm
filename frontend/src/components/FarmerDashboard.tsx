@@ -240,8 +240,8 @@ const FarmerDashboard = () => {
           const amountStr = offer.bidAmount ? offer.bidAmount.replace(/[^0-9.-]+/g, "") : "0"
           const amount = parseFloat(amountStr) || 0
 
-          if (offer.offerType === 'crop') {
-            // I sold a crop -> Income
+          if (offer.offerType === 'crop' || offer.offerType === 'need_fulfillment') {
+            // I sold a crop OR fulfilled a buyer need -> Income
             totalIncome += amount
             saleTransactions.push(offer)
           } else if (offer.offerType === 'service') {
@@ -1610,8 +1610,8 @@ const FarmerDashboard = () => {
                     <p className="text-sm text-gray-500">Posted: {new Date(need.createdAt).toLocaleDateString()}</p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${need.status === 'fulfilled' ? 'bg-blue-100 text-blue-800' :
-                      need.status === 'expired' ? 'bg-gray-100 text-gray-800' :
-                        'bg-green-100 text-green-800'
+                    need.status === 'expired' ? 'bg-gray-100 text-gray-800' :
+                      'bg-green-100 text-green-800'
                     }`}>
                     {need.status === 'fulfilled' ? 'Completed' : need.status === 'active' ? 'Active' : need.status.charAt(0).toUpperCase() + need.status.slice(1)}
                   </span>
@@ -2754,7 +2754,9 @@ const FarmerDashboard = () => {
                     {reportTab === 'income' ? (
                       reportData.cropSales.length > 0 ? reportData.cropSales.slice(0, 5).map((sale: any, i) => (
                         <tr key={i}>
-                          <td className="px-3 py-2 text-sm text-gray-900">{sale.crop?.name || 'Crop Sale'}</td>
+                          <td className="px-3 py-2 text-sm text-gray-900">
+                            {sale.crop?.name || (sale.buyerNeed && typeof sale.buyerNeed === 'object' ? sale.buyerNeed.cropName : 'Buyer Fullfillment') || 'Crop Sale'}
+                          </td>
                           <td className="px-3 py-2 text-sm text-green-600 font-medium">₹{sale.bidAmount?.toString().replace(/[₹$]/g, '')}</td>
                           <td className="px-3 py-2 text-sm text-gray-500">{new Date(sale.createdAt).toLocaleDateString()}</td>
                         </tr>
