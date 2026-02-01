@@ -10,6 +10,9 @@ import {
   Package, Bell, Home, Menu, User, Shield, Heart,
   MapPin, UserCheck, Trash, MessageSquare, ClipboardList, Plus, Edit, Eye
 } from 'lucide-react' // Icon library for consistent UI elements
+import {
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, Line
+} from 'recharts'; // Charting library
 import API_URL from '../config'
 import ChatSystem from './ChatSystem'
 
@@ -17,7 +20,9 @@ import ChatSystem from './ChatSystem'
 const BuyerDashboard = () => {
   const { signOut } = useClerk()
   // State management for dashboard functionality
-  const [activeTab, setActiveTab] = useState('overview') // Controls which section is currently displayed
+  const [activeTab, setActiveTab] = useState('overview')
+  const [trendsData, setTrendsData] = useState<any>(null)
+  const [selectedTrendCrop, setSelectedTrendCrop] = useState('Wheat') // Controls which section is currently displayed
   const [sidebarOpen, setSidebarOpen] = useState(false) // Controls mobile sidebar visibility
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false) // Controls sign out confirmation modal
   const [user, setUser] = useState<any>(null)
@@ -471,6 +476,25 @@ const BuyerDashboard = () => {
       console.error('Error starting chat:', error);
     }
   };
+
+  // Fetch Market Trends
+  const fetchMarketTrends = async (crop: string) => {
+    try {
+      const res = await fetch(`${API_URL}/api/market-prices/history?crop=${crop}`)
+      if (res.ok) {
+        const data = await res.json()
+        setTrendsData(data)
+      }
+    } catch (err) {
+      console.error("Error fetching market trends", err)
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === 'trends') {
+      fetchMarketTrends(selectedTrendCrop)
+    }
+  }, [activeTab, selectedTrendCrop])
 
   // Renders the main overview section with dashboard statistics and key information
   const renderOverview = () => (
@@ -1354,6 +1378,132 @@ const BuyerDashboard = () => {
     </div>
   )
 
+  // Renders the Market Trends Section
+  const renderMarketTrends = () => (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden"
+      >
+        <div className="relative z-10">
+          <h2 className="text-3xl font-bold mb-2">Market Price Trends 📈</h2>
+          <p className="text-blue-100 text-lg">Analyze historical price data to make smarter buying decisions.</p>
+        </div>
+        <div className="absolute right-0 bottom-0 opacity-10">
+          <TrendingUp className="w-64 h-64 text-white" />
+        </div>
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Controls & Stats Card */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Crop</h3>
+            <select
+              value={selectedTrendCrop}
+              onChange={(e) => setSelectedTrendCrop(e.target.value)}
+              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 mb-6"
+            >
+              <option value="Wheat">Wheat</option>
+              <option value="Rice (Basmati)">Rice (Basmati)</option>
+              <option value="Cotton">Cotton</option>
+              <option value="Maize">Maize</option>
+              <option value="Potato">Potato</option>
+              <option value="Onion">Onion</option>
+              <option value="Soybean">Soybean</option>
+            </select>
+
+            {trendsData && (
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
+                  <p className="text-sm text-gray-500 mb-1">Current Market Price</p>
+                  <p className="text-2xl font-bold text-gray-900">₹{trendsData.currentPrice}/Qtl</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-green-50 rounded-lg border border-green-100">
+                    <p className="text-xs text-green-600 font-medium mb-1">Lowest (6m)</p>
+                    <p className="text-lg font-bold text-green-800">₹{trendsData.lowest}</p>
+                  </div>
+                  <div className="p-3 bg-red-50 rounded-lg border border-red-100">
+                    <p className="text-xs text-red-600 font-medium mb-1">Highest (6m)</p>
+                    <p className="text-lg font-bold text-red-800">₹{trendsData.highest}</p>
+                  </div>
+                </div>
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 flex items-start">
+                  <TrendingUp className="w-5 h-5 text-blue-600 mr-3 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold text-blue-800 mb-1">Market Insight</p>
+                    <p className="text-sm text-blue-600 leading-relaxed">
+                      {trendsData.insight}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Chart Card */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col">
+          <div className="mb-6 flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-gray-900">Price History (6 Months)</h3>
+            <span className="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-1 rounded">Avg. Mandi Prices</span>
+          </div>
+
+          <div className="flex-1 min-h-[400px]">
+            {trendsData ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={trendsData.data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <XAxis
+                    dataKey="month"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6b7280', fontSize: 12 }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#6b7280', fontSize: 12 }}
+                    tickFormatter={(value) => `₹${value}`}
+                    domain={['auto', 'auto']}
+                  />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                    formatter={(value: any) => [`₹${value}`, 'Price']}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="price"
+                    stroke="#2563eb"
+                    strokeWidth={3}
+                    fillOpacity={1}
+                    fill="url(#colorPrice)"
+                    activeDot={{ r: 6, strokeWidth: 0 }}
+                  />
+                  <Line type="monotone" dataKey="avg" stroke="#9ca3af" strokeDasharray="5 5" strokeWidth={2} dot={false} name="Industry Avg" />
+                  <Legend />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                Loading market data...
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   // Main content router - Determines which section to display based on active tab
   const renderContent = () => {
     switch (activeTab) {
@@ -1362,6 +1512,7 @@ const BuyerDashboard = () => {
       case 'orders': return renderOrders() // Shows buyer's current and past orders
       case 'saved': return renderSaved() // Shows saved crops in wishlist
       case 'reports': return renderReports() // Shows financial reports
+      case 'trends': return renderMarketTrends() // Market Trends Section
       case 'profile': return renderProfile() // Shows user profile
       default: return renderOverview() // Default to overview if no tab is selected
     }

@@ -103,4 +103,42 @@ router.get('/', async (req, res) => {
     res.json(finalData);
 });
 
+// @route   GET api/market-prices/history
+// @desc    Get simulated historical price trends (6 months)
+// @access  Public
+router.get('/history', (req, res) => {
+    const { crop, market } = req.query;
+    const cropName = crop || 'Wheat';
+    const marketName = market || 'Average Mandi Price';
+
+    // Simulate 6 months of data
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const basePrice = 2000 + Math.random() * 1000;
+
+    // Seasonal Trend Simulation
+    const historyData = months.map((month, index) => {
+        // Create a trend: rise then fall or vice versa
+        const trendFactor = Math.sin(index / 1.5) * 200;
+        const randomFluctuation = (Math.random() * 100) - 50;
+
+        return {
+            month,
+            price: Math.floor(basePrice + trendFactor + randomFluctuation),
+            avg: Math.floor(basePrice + (Math.random() * 50 - 25)) // Simulated industry average
+        };
+    });
+
+    res.json({
+        crop: cropName,
+        market: marketName,
+        data: historyData,
+        currentPrice: historyData[historyData.length - 1].price,
+        highest: Math.max(...historyData.map(d => d.price)),
+        lowest: Math.min(...historyData.map(d => d.price)),
+        insight: historyData[5].price < historyData[4].price
+            ? "Prices are currently trending downwards. Good time to buy."
+            : "Prices are rising. Consider booking stocks soon."
+    });
+});
+
 module.exports = router;
