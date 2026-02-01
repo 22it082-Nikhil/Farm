@@ -280,6 +280,7 @@ const FarmerDashboard = () => {
       fetchWeather()
       fetchAvailableServices()
       fetchReportData()
+      fetchMarketPrices()
     }
   }, [user])
 
