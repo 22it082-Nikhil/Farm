@@ -68,13 +68,7 @@ const generateMarketData = () => {
 router.get('/', async (req, res) => {
     let finalData = [];
 
-    // 1. Try to fetch Live Currency (Real Public API)
-    const currencyData = await fetchLiveCurrency();
-    if (currencyData) {
-        finalData.push(currencyData);
-    }
-
-    // 2. Try to fetch Agmarknet Data (if Key exists)
+    // 1. Try to fetch Agmarknet Data (if Key exists)
     if (API_KEY) {
         try {
             const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${API_KEY}&format=json&limit=20`;
@@ -101,8 +95,8 @@ router.get('/', async (req, res) => {
         }
     }
 
-    // 3. Fallback: Add simulated crop data if Agmarknet failed or no key
-    // We mix simulated data with the Real Currency data so the user sees at least ONE real thing.
+    // 2. Fallback: Simulated crop data (if no key or fetch failed)
+    // Using realistic ranges for Indian Mandis
     const simData = generateMarketData();
     finalData = [...finalData, ...simData];
 
