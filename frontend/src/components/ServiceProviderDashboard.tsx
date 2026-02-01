@@ -180,6 +180,8 @@ const ServiceProviderDashboard = () => {
     phone: '',
     organization: '',
     location: '',
+    latitude: '',
+    longitude: '',
     bio: ''
   })
 
@@ -192,6 +194,8 @@ const ServiceProviderDashboard = () => {
         phone: user.phone || '',
         organization: user.organization || '',
         location: user.location || '',
+        latitude: user.latitude || '',
+        longitude: user.longitude || '',
         bio: user.bio || ''
       })
     }
@@ -1762,6 +1766,31 @@ const ServiceProviderDashboard = () => {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Latitude</label>
+                  <input
+                    type="text"
+                    disabled={!isEditingProfile}
+                    value={profileForm.latitude}
+                    onChange={(e) => setProfileForm({ ...profileForm, latitude: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all"
+                    placeholder="e.g. 21.1458"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Longitude</label>
+                  <input
+                    type="text"
+                    disabled={!isEditingProfile}
+                    value={profileForm.longitude}
+                    onChange={(e) => setProfileForm({ ...profileForm, longitude: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 transition-all"
+                    placeholder="e.g. 79.0882"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Location / Base of Operations</label>
                 <div className="relative">
@@ -1776,6 +1805,33 @@ const ServiceProviderDashboard = () => {
                   />
                 </div>
               </div>
+
+              {/* Location Map Display */}
+              {profileForm.latitude && profileForm.longitude && (
+                <div className="mt-6">
+                  <p className="text-sm text-gray-500 mb-2">Base Location (Map)</p>
+                  <div className="bg-gray-100 rounded-xl overflow-hidden h-64 border border-gray-200 relative group">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      scrolling="no"
+                      marginHeight={0}
+                      marginWidth={0}
+                      src={`https://maps.google.com/maps?q=${profileForm.latitude},${profileForm.longitude}&z=15&output=embed`}
+                      className="w-full h-full"
+                    ></iframe>
+                    <a
+                      href={`https://www.google.com/maps?q=${profileForm.latitude},${profileForm.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg shadow-md text-sm font-bold text-gray-700 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0"
+                    >
+                      Open in Google Maps
+                    </a>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Bio / Service Description</label>
@@ -1802,6 +1858,8 @@ const ServiceProviderDashboard = () => {
                         email: user?.email || '',
                         phone: user?.phone || '',
                         location: user?.location || '',
+                        latitude: user?.latitude || '',
+                        longitude: user?.longitude || '',
                         bio: user?.bio || '',
                       });
                     }}
