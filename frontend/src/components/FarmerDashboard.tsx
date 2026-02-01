@@ -141,6 +141,9 @@ const FarmerDashboard = () => {
     image: '🚜',
     status: 'available'
   })
+  const [selectedRentalImage, setSelectedRentalImage] = useState<File | null>(null)
+  const [rentalImagePreview, setRentalImagePreview] = useState<string | null>(null)
+  const [uploadingRentalImage, setUploadingRentalImage] = useState(false)
 
   // Fetch Crops
   const fetchCrops = async () => {
@@ -261,6 +264,24 @@ const FarmerDashboard = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle rental image file selection
+  const handleRentalImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File too large. Max 5MB.");
+        return;
+      }
+      setSelectedRentalImage(file);
+      // Create preview URL (Base64)
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setRentalImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -609,9 +630,14 @@ const FarmerDashboard = () => {
 
       const method = currentRental ? 'PUT' : 'POST'
 
+      let finalImage = rentalForm.image;
+      if (selectedRentalImage && rentalImagePreview) {
+        finalImage = rentalImagePreview;
+      }
+
       const body = currentRental
-        ? JSON.stringify(rentalForm)
-        : JSON.stringify({ ...rentalForm, farmer: user._id })
+        ? JSON.stringify({ ...rentalForm, image: finalImage })
+        : JSON.stringify({ ...rentalForm, image: finalImage, farmer: user._id })
 
       const res = await fetch(url, {
         method,
@@ -623,6 +649,8 @@ const FarmerDashboard = () => {
         setIsRentalModalOpen(false)
         fetchRentals()
         setRentalForm({ name: '', type: 'Tractor', pricePerHour: '', description: '', image: '🚜', status: 'available' })
+        setSelectedRentalImage(null)
+        setRentalImagePreview(null)
         setCurrentRental(null)
       }
     } catch (err) {
@@ -643,6 +671,8 @@ const FarmerDashboard = () => {
   const openAddRentalModal = () => {
     setCurrentRental(null)
     setRentalForm({ name: '', type: 'Tractor', pricePerHour: '', description: '', image: '🚜', status: 'available' })
+    setSelectedRentalImage(null)
+    setRentalImagePreview(null)
     setIsRentalModalOpen(true)
   }
 
@@ -656,6 +686,8 @@ const FarmerDashboard = () => {
       image: rental.image,
       status: rental.status
     })
+    setSelectedRentalImage(null)
+    setRentalImagePreview(null)
     setIsRentalModalOpen(true)
   }
 
@@ -1842,7 +1874,13 @@ const FarmerDashboard = () => {
             className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
           >
             <div className="text-center mb-4">
-              <div className="text-4xl mb-2">{rental.image}</div>
+              <div className="h-40 w-full mb-4 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                {rental.image && rental.image.startsWith('data:image') ? (
+                  <img src={rental.image} alt={rental.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-6xl">{rental.image}</span>
+                )}
+              </div>
               <h3 className="text-lg font-semibold text-gray-900">{rental.name}</h3>
               <p className="text-sm text-gray-500">{rental.type}</p>
             </div>
@@ -1961,14 +1999,47 @@ const FarmerDashboard = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Icon (Emoji)</label>
-                  <input
-                    type="text"
-                    name="image"
-                    value={rentalForm.image}
-                    onChange={handleRentalInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  />
+                </div>
+
+                {/* Image Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Equipment Image</label>
+                  <div className="space-y-2">
+                    {/* Image Preview */}
+                    {(rentalImagePreview || rentalForm.image) && (
+                      <div className="flex justify-center">
+                        <div className="w-24 h-24 rounded-lg border-2 border-gray-300 overflow-hidden bg-gray-50 flex items-center justify-center">
+                          {rentalImagePreview ? (
+                            <img src={rentalImagePreview} alt="Preview" className="w-full h-full object-cover" />
+                          ) : rentalForm.image && rentalForm.image.startsWith('data:image') ? (
+                            <img src={rentalForm.image} alt="Rental" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-4xl">{rentalForm.image}</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {/* File Input */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleRentalImageSelect}
+                      className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer"
+                    />
+                    <p className="text-xs text-gray-500">Upload an image or use emoji below (max 5MB)</p>
+                    {/* Emoji Fallback */}
+                    <input
+                      type="text"
+                      name="image"
+                      value={rentalForm.image}
+                      onChange={handleRentalInputChange}
+                      placeholder="Or enter emoji (e.g., 🚜)"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                    {uploadingRentalImage && (
+                      <p className="text-sm text-primary-600">Uploading image...</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
