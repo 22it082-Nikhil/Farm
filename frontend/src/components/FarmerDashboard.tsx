@@ -76,6 +76,8 @@ const FarmerDashboard = () => {
 
   // Sold Crops State
   const [soldCrops, setSoldCrops] = useState<any[]>([])
+  const [selectedSaleDetail, setSelectedSaleDetail] = useState<any>(null)
+  const [showSaleDetailModal, setShowSaleDetailModal] = useState(false)
 
   const fetchSoldCrops = async () => {
     if (!user?._id) return
@@ -91,6 +93,12 @@ const FarmerDashboard = () => {
       console.error("Failed to fetch sold crops", err)
     }
   }
+
+  const handleViewSaleDetail = (sale: any) => {
+    setSelectedSaleDetail(sale)
+    setShowSaleDetailModal(true)
+  }
+
 
   // Dynamic Crop State
   const [crops, setCrops] = useState<any[]>([])
@@ -2878,17 +2886,17 @@ const FarmerDashboard = () => {
                     <span className="text-sm text-gray-600">Buyer</span>
                     <span className="font-medium text-gray-900 flex items-center">
                       <User className="w-3 h-3 mr-1 text-gray-400" />
-                      {sale.serviceProvider?.name || 'Valued Buyer'}
+                      {sale.serviceProvider?.name || sale.buyer?.name || 'Unknown Buyer'}
                     </span>
                   </div>
                 </div>
 
                 <button
-                  onClick={() => handleStartChat(sale._id)}
-                  className="w-full py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center group"
+                  onClick={() => handleViewSaleDetail(sale)}
+                  className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center group"
                 >
-                  <MessageSquare className="w-4 h-4 mr-2 text-gray-400 group-hover:text-blue-500" />
-                  Chat with Buyer
+                  <FileText className="w-4 h-4 mr-2" />
+                  View Details
                 </button>
               </div>
             </motion.div>
@@ -3442,6 +3450,153 @@ const FarmerDashboard = () => {
                   </div>
                 ))
               )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Sale Detail Modal */}
+      {showSaleDetailModal && selectedSaleDetail && (
+        <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl max-w-2xl w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto"
+          >
+            {/* Header */}
+            <div className="bg-gradient-to-r from-green-600 to-green-700 p-6 rounded-t-2xl text-white">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-2xl font-bold mb-1">Sale Details</h3>
+                  <p className="text-green-100 text-sm">Complete order information</p>
+                </div>
+                <button
+                  onClick={() => setShowSaleDetailModal(false)}
+                  className="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                >
+                  <span className="text-2xl">✕</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Crop Information */}
+              <div className="bg-green-50 rounded-xl p-5 border border-green-100">
+                <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                  <Leaf className="w-5 h-5 mr-2 text-green-600" />
+                  Crop Information
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Crop Name</p>
+                    <p className="font-semibold text-gray-900">{selectedSaleDetail.crop?.name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Quantity Sold</p>
+                    <p className="font-semibold text-gray-900">{selectedSaleDetail.quantityRequested || selectedSaleDetail.crop?.quantity || 'N/A'}</p>
+                  </div>
+                  {selectedSaleDetail.pricePerUnit && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Price per Unit</p>
+                      <p className="font-semibold text-green-700">₹{selectedSaleDetail.pricePerUnit}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Sale Price</p>
+                    <p className="font-bold text-green-700 text-lg">{selectedSaleDetail.bidAmount}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Buyer Information */}
+              <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                  <User className="w-5 h-5 mr-2 text-blue-600" />
+                  Buyer Information
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Buyer Name</p>
+                    <p className="font-semibold text-gray-900">{selectedSaleDetail.serviceProvider?.name || selectedSaleDetail.buyer?.name || 'Unknown Buyer'}</p>
+                  </div>
+                  {selectedSaleDetail.serviceProvider?.phone && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Contact</p>
+                      <p className="font-semibold text-gray-900">{selectedSaleDetail.serviceProvider.phone}</p>
+                    </div>
+                  )}
+                  {selectedSaleDetail.serviceProvider?.location && (
+                    <div className="col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">Location</p>
+                      <p className="font-semibold text-gray-900 flex items-center">
+                        <MapPin className="w-4 h-4 mr-1 text-gray-400" />
+                        {selectedSaleDetail.serviceProvider.location}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Transaction Details */}
+              <div className="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                <h4 className="font-bold text-gray-900 mb-4 flex items-center text-lg">
+                  <FileText className="w-5 h-5 mr-2 text-gray-600" />
+                  Transaction Details
+                </h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Order ID</p>
+                    <p className="font-mono text-sm font-semibold text-gray-900">#{selectedSaleDetail._id.slice(-8).toUpperCase()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Status</p>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      SOLD
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Sale Date</p>
+                    <p className="font-semibold text-gray-900">{new Date(selectedSaleDetail.updatedAt || selectedSaleDetail.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Sale Time</p>
+                    <p className="font-semibold text-gray-900">{new Date(selectedSaleDetail.updatedAt || selectedSaleDetail.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Notes */}
+              {selectedSaleDetail.notes && (
+                <div className="bg-yellow-50 rounded-xl p-5 border border-yellow-100">
+                  <h4 className="font-bold text-gray-900 mb-2 flex items-center">
+                    <AlertCircle className="w-5 h-5 mr-2 text-yellow-600" />
+                    Notes
+                  </h4>
+                  <p className="text-gray-700 text-sm">{selectedSaleDetail.notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 p-6 bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+              <button
+                onClick={() => setShowSaleDetailModal(false)}
+                className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowSaleDetailModal(false)
+                  handleStartChat(selectedSaleDetail._id)
+                }}
+                className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors flex items-center"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Chat with Buyer
+              </button>
             </div>
           </motion.div>
         </div>
