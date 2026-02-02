@@ -97,6 +97,266 @@ const ServiceProviderDashboard = () => {
 
 
 
+  // Broadcasts State
+  const [broadcasts, setBroadcasts] = useState<any[]>([])
+  const [isBroadcastModalOpen, setIsBroadcastModalOpen] = useState(false)
+  const [broadcastForm, setBroadcastForm] = useState({
+    title: '',
+    type: 'Vehicle',
+    description: '',
+    location: '',
+    budget: '',
+    availabilityDate: '',
+    endDate: ''
+  })
+
+  // Fetch Broadcasts
+  const fetchBroadcasts = async () => {
+    if (!user?._id) return
+    try {
+      const res = await fetch(`${API_URL}/api/service-broadcasts/my-broadcasts?providerId=${user._id}`)
+      if (res.ok) {
+        const data = await res.json()
+        setBroadcasts(data)
+      }
+    } catch (err) {
+      console.error("Error fetching broadcasts", err)
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === 'broadcasts') {
+      fetchBroadcasts()
+    }
+  }, [activeTab, user])
+
+  const handleCreateBroadcast = async (e: any) => {
+    e.preventDefault()
+    if (!user?._id) return
+
+    try {
+      const res = await fetch(`${API_URL}/api/service-broadcasts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: user._id,
+          ...broadcastForm,
+          budget: parseFloat(broadcastForm.budget)
+        })
+      })
+
+      if (res.ok) {
+        setIsBroadcastModalOpen(false)
+        setBroadcastForm({
+          title: '',
+          type: 'Vehicle',
+          description: '',
+          location: '',
+          budget: '',
+          availabilityDate: '',
+          endDate: ''
+        })
+        fetchBroadcasts()
+        alert('Broadcast published successfully!')
+      } else {
+        alert('Failed to publish broadcast')
+      }
+    } catch (err) {
+      console.error("Error creating broadcast", err)
+    }
+  }
+
+  const handleDeleteBroadcast = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this broadcast?')) return
+    try {
+      const res = await fetch(`${API_URL}/api/service-broadcasts/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchBroadcasts()
+      }
+    } catch (err) {
+      console.error("Error deleting broadcast", err)
+    }
+  }
+
+  const renderBroadcasts = () => (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white flex justify-between items-center"
+      >
+        <div>
+          <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
+          <p className="text-indigo-100 text-lg">Broadcast your availability to farmers directly (Reverse Bidding)</p>
+        </div>
+        <button
+          onClick={() => setIsBroadcastModalOpen(true)}
+          className="bg-white text-indigo-600 px-6 py-2 rounded-lg font-semibold shadow-lg hover:bg-indigo-50 transition-colors flex items-center"
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          New Broadcast
+        </button>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {broadcasts.length === 0 ? (
+          <div className="col-span-full text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
+            <Truck className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg">No active broadcasts. Post one to get bids!</p>
+          </div>
+        ) : (
+          broadcasts.map((broadcast) => (
+            <motion.div
+              key={broadcast._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
+                  ${broadcast.type === 'Vehicle' ? 'bg-blue-100 text-blue-800' :
+                    broadcast.type === 'Manpower' ? 'bg-purple-100 text-purple-800' :
+                      'bg-orange-100 text-orange-800'}`}>
+                  {broadcast.type}
+                </span>
+                <span className={`px-2 py-1 rounded-md text-xs font-medium border
+                  ${broadcast.status === 'active' ? 'border-green-200 text-green-700 bg-green-50' : 'border-gray-200 text-gray-600'}`}>
+                  {broadcast.status.toUpperCase()}
+                </span>
+              </div>
+
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{broadcast.title}</h3>
+              <p className="text-gray-600 text-sm mb-4 line-clamp-2">{broadcast.description}</p>
+
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center text-sm text-gray-600">
+                  <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                  {broadcast.location}
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <CalendarIcon className="w-4 h-4 mr-2 text-gray-400" />
+                  {new Date(broadcast.availabilityDate).toLocaleDateString()}
+                </div>
+                <div className="flex items-center text-sm font-bold text-green-600">
+                  <IndianRupee className="w-4 h-4 mr-2" />
+                  {broadcast.budget} (Budget)
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-gray-100 flex justify-end space-x-2">
+                <button
+                  onClick={() => handleDeleteBroadcast(broadcast._id)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete Broadcast"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
+
+      {isBroadcastModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">Create Service Broadcast</h3>
+                  <button onClick={() => setIsBroadcastModalOpen(false)} className="text-gray-400 hover:text-gray-500">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <form onSubmit={handleCreateBroadcast} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Service Type</label>
+                    <select
+                      value={broadcastForm.type}
+                      onChange={(e) => setBroadcastForm({ ...broadcastForm, type: e.target.value })}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    >
+                      <option value="Vehicle">Vehicle</option>
+                      <option value="Manpower">Manpower</option>
+                      <option value="Equipment">Equipment</option>
+                      <option value="Storage">Storage</option>
+                      <option value="Processing">Processing</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Title</label>
+                    <input
+                      type="text"
+                      required
+                      value={broadcastForm.title}
+                      onChange={(e) => setBroadcastForm({ ...broadcastForm, title: e.target.value })}
+                      placeholder="e.g. Tractor Available for Rent"
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea
+                      required
+                      value={broadcastForm.description}
+                      onChange={(e) => setBroadcastForm({ ...broadcastForm, description: e.target.value })}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Location</label>
+                      <input
+                        type="text"
+                        required
+                        value={broadcastForm.location}
+                        onChange={(e) => setBroadcastForm({ ...broadcastForm, location: e.target.value })}
+                        placeholder="City/Village"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Budget (₹)</label>
+                      <input
+                        type="number"
+                        required
+                        value={broadcastForm.budget}
+                        onChange={(e) => setBroadcastForm({ ...broadcastForm, budget: e.target.value })}
+                        placeholder="e.g. 5000"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Availability Date</label>
+                    <input
+                      type="date"
+                      required
+                      value={broadcastForm.availabilityDate}
+                      onChange={(e) => setBroadcastForm({ ...broadcastForm, availabilityDate: e.target.value })}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition"
+                  >
+                    Publish Broadcast
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
   const [jobs, setJobs] = useState<any[]>([])
   const [bids, setBids] = useState<any[]>([])
   const [marketHistory, setMarketHistory] = useState<any[]>([]) // Global accepted bids
@@ -2251,6 +2511,7 @@ const ServiceProviderDashboard = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
       case 'services': return renderServices()
+      case 'broadcasts': return renderBroadcasts() // New Render Function
       case 'jobs': return renderJobs()
       case 'bids': return renderBids()
       case 'history': return renderAcceptedBids()
@@ -2362,6 +2623,7 @@ const ServiceProviderDashboard = () => {
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
                   { id: 'services', name: 'My Services', icon: <Wrench className="w-5 h-5" /> },
+                  { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> }, // New Tab
                   { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
                   { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
                   { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> },

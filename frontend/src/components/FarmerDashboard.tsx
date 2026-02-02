@@ -53,6 +53,110 @@ const FarmerDashboard = () => {
 
 
 
+  // Broadcasts State (Reverse Bidding)
+  const [activeBroadcasts, setActiveBroadcasts] = useState<any[]>([])
+
+  const fetchActiveBroadcasts = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/service-broadcasts`)
+      if (res.ok) {
+        const data = await res.json()
+        setActiveBroadcasts(data)
+      }
+    } catch (err) {
+      console.error("Error fetching active broadcasts", err)
+    }
+  }
+
+  useEffect(() => {
+    if (activeTab === 'broadcasts') {
+      fetchActiveBroadcasts()
+    }
+  }, [activeTab])
+
+  const renderBroadcasts = () => (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl p-8 text-white"
+      >
+        <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
+        <p className="text-teal-100 text-lg">Browse services directly offered by providers (Reverse Bidding)</p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {activeBroadcasts.length === 0 ? (
+          <div className="col-span-full text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
+            <Truck className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 text-lg">No service broadcasts active at the moment.</p>
+          </div>
+        ) : (
+          activeBroadcasts.map((broadcast) => (
+            <motion.div
+              key={broadcast._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
+                  ${broadcast.type === 'Vehicle' ? 'bg-blue-100 text-blue-800' :
+                    broadcast.type === 'Manpower' ? 'bg-purple-100 text-purple-800' :
+                      'bg-orange-100 text-orange-800'}`}>
+                  {broadcast.type}
+                </span>
+                <span className="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-md">
+                  Posted: {new Date(broadcast.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                  {broadcast.provider?.avatar ? (
+                    <img src={broadcast.provider.avatar} alt="Provider" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-6 h-6 text-gray-400" />
+                  )}
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-gray-900">{broadcast.provider?.name || 'Service Provider'}</h4>
+                  <p className="text-xs text-gray-500">{broadcast.provider?.phone || 'Contact not listed'}</p>
+                </div>
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{broadcast.title}</h3>
+              <p className="text-gray-600 text-sm mb-4 line-clamp-3">{broadcast.description}</p>
+
+              <div className="space-y-2 mb-4 bg-gray-50 p-3 rounded-lg">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Location:</span>
+                  <span className="font-medium text-gray-900">{broadcast.location}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Available:</span>
+                  <span className="font-medium text-gray-900">{new Date(broadcast.availabilityDate).toLocaleDateString()}</span>
+                </div>
+                <div className="flex justify-between text-sm items-center">
+                  <span className="text-gray-500">Rate:</span>
+                  <span className="font-bold text-green-600 text-lg">₹{broadcast.budget}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => alert(`Contact ${broadcast.provider?.name}: ${broadcast.provider?.phone}`)}
+                className="w-full bg-teal-600 text-white py-2 rounded-lg font-semibold hover:bg-teal-700 transition flex items-center justify-center"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Contact Provider
+              </button>
+            </motion.div>
+          ))
+        )}
+      </div>
+    </div>
+  )
+
   // Dynamic Overview State
   const [weather, setWeather] = useState<any>(null)
   const [revenueStats, setRevenueStats] = useState({ total: 0, trend: 0, increase: 0 })
@@ -3413,6 +3517,7 @@ const FarmerDashboard = () => {
       case 'sold_crops': return renderSoldCrops() // Render Sold Crops
       case 'services': return renderServices()
       case 'available_services': return renderAvailableServices()
+      case 'broadcasts': return renderBroadcasts() // New Service Broadcasts Browsing
       case 'rentals': return renderRentals()
       case 'market': return renderMarketPrices()
       case 'calendar': return renderCalendar()
@@ -3517,8 +3622,9 @@ const FarmerDashboard = () => {
                     { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
                     { id: 'sold_crops', name: 'Sold Crops', icon: <ShoppingBag className="w-5 h-5" /> }, // Sold Crops Tab
                     { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
-                    { id: 'available_services', name: 'Service Available', icon: <Wrench className="w-5 h-5" /> },
-                    { id: 'rentals', name: 'My Rentals', icon: <ShoppingCart className="w-5 h-5" /> },
+                    { id: 'available_services', name: 'Service Available', icon: <Truck className="w-5 h-5" /> },
+                    { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> }, // New Tab
+                    { id: 'rentals', name: 'My Rentals', icon: <Warehouse className="w-5 h-5" /> },
                     { id: 'calendar', name: 'Calendar & Tasks', icon: <CalendarIcon className="w-5 h-5" /> },
                     { id: 'market', name: 'Market Prices', icon: <BarChart3 className="w-5 h-5" /> },
                     { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5" /> },

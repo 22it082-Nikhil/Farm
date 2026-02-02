@@ -52,6 +52,7 @@ app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/market-prices', require('./routes/marketPrices'));
 app.use('/api/buyer-needs', require('./routes/buyerNeeds'));
+app.use('/api/service-broadcasts', require('./routes/serviceBroadcasts'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/market-prices', require('./routes/marketPrices'));
 app.use('/api/tasks', require('./routes/tasks'));
