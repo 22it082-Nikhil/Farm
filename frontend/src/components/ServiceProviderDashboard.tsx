@@ -220,16 +220,16 @@ const ServiceProviderDashboard = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-8 text-white"
+        className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white"
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h2 className="text-3xl font-bold mb-2">Service Broadcasts 📡</h2>
-            <p className="text-purple-100 text-lg">Broadcast your availability to farmers directly (Reverse Bidding)</p>
+            <p className="text-blue-100 text-lg">Broadcast your availability to farmers directly (Reverse Bidding)</p>
           </div>
           <button
             onClick={() => setIsBroadcastModalOpen(true)}
-            className="bg-white text-purple-600 px-6 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-colors inline-flex items-center shadow-lg"
+            className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center shadow-lg"
           >
             <Plus className="w-5 h-5 mr-2" />
             New Broadcast
@@ -298,7 +298,7 @@ const ServiceProviderDashboard = () => {
             <div className="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
               <Truck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500 mb-2">No active broadcasts. Post one to get bids!</p>
-              <button onClick={() => setIsBroadcastModalOpen(true)} className="text-purple-600 hover:underline">Post your first broadcast</button>
+              <button onClick={() => setIsBroadcastModalOpen(true)} className="text-blue-600 hover:underline">Post your first broadcast</button>
             </div>
           ) : (
             broadcasts.map((broadcast) => (
@@ -341,7 +341,7 @@ const ServiceProviderDashboard = () => {
                 <div className="flex space-x-3 pt-4 border-t border-gray-100">
                   <button
                     onClick={() => handleViewBids(broadcast._id)}
-                    className="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm py-2 px-4 rounded-lg font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm py-2 px-4 rounded-lg font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center justify-center"
                   >
                     <Eye className="w-4 h-4 mr-2" />
                     View Bids
