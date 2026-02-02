@@ -1410,14 +1410,14 @@ const ServiceProviderDashboard = () => {
           {/* Header Section */}
           <div className="flex p-4 border-b-2 border-black">
             {/* Logo Placeholder (Left) */}
-            <div className="w-24 h-24 border-2 border-black rounded-full flex items-center justify-center mr-6 shrink-0">
-              <span className="font-bold text-xl">LOGO</span>
+            <div className="w-24 h-24 border-2 border-black rounded-full flex items-center justify-center mr-6 shrink-0 overflow-hidden">
+              <img src="/logo.png" alt="FarmConnect" className="w-full h-full object-contain p-1" />
             </div>
 
             {/* Company Details (Center) */}
             <div className="flex-grow text-center">
               <h4 className="font-bold text-sm uppercase tracking-wide mb-1">Bill / Cash Memo</h4>
-              <h1 className="font-bold text-3xl uppercase mb-2">{companyName}</h1>
+              <h1 className="font-bold text-3xl uppercase mb-2">FarmConnect</h1>
               <p className="text-sm px-8 leading-tight">{companyAddress}</p>
               <p className="text-sm font-bold mt-1">Phone: {companyPhone}</p>
             </div>
@@ -1485,7 +1485,15 @@ const ServiceProviderDashboard = () => {
                 <div className="flex-grow p-2">
                   <p className="font-bold uppercase mb-1">{invoiceData.serviceRequest?.type} Service</p>
                   <p className="ml-4 italic mb-1">- {invoiceData.serviceRequest?.description}</p>
-                  <p className="ml-4 text-xs">Duration: {invoiceData.serviceRequest?.duration}</p>
+                  <div className="ml-4 text-xs mt-2 space-y-0.5">
+                    <p><span className="font-semibold">Duration:</span> {invoiceData.serviceRequest?.duration}</p>
+                    {invoiceData.serviceRequest?.scheduledDate && (
+                      <p><span className="font-semibold">Start:</span> {new Date(invoiceData.serviceRequest.scheduledDate).toLocaleDateString()}</p>
+                    )}
+                    {invoiceData.serviceRequest?.endDate && (
+                      <p><span className="font-semibold">End:</span> {new Date(invoiceData.serviceRequest.endDate).toLocaleDateString()}</p>
+                    )}
+                  </div>
                 </div>
                 <div className="w-24 p-2 text-right">{invoiceData.bidAmount}</div>
                 <div className="w-32 p-2 text-right font-bold">{invoiceData.bidAmount}</div>
