@@ -31,6 +31,10 @@ const ServiceProviderDashboard = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [selectedBidForDetail, setSelectedBidForDetail] = useState<any>(null)
 
+  // Printing State
+  const [printMode, setPrintMode] = useState<'report' | 'invoice'>('report')
+  const [invoiceData, setInvoiceData] = useState<any>(null)
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
     if (storedUser) {
@@ -1275,8 +1279,8 @@ const ServiceProviderDashboard = () => {
                       {/* Header */}
                       <div className="flex items-center gap-4 mb-6">
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${bid.serviceRequest?.type === 'Vehicle' ? 'bg-blue-50 text-blue-600' :
-                            bid.serviceRequest?.type === 'Manpower' ? 'bg-orange-50 text-orange-600' :
-                              'bg-green-50 text-green-600'
+                          bid.serviceRequest?.type === 'Manpower' ? 'bg-orange-50 text-orange-600' :
+                            'bg-green-50 text-green-600'
                           }`}>
                           {bid.serviceRequest?.type === 'Vehicle' ? <Truck className="w-6 h-6" /> :
                             bid.serviceRequest?.type === 'Manpower' ? <Users className="w-6 h-6" /> :
@@ -1305,8 +1309,8 @@ const ServiceProviderDashboard = () => {
                         <div>
                           <p className="text-sm text-gray-500 mb-1 font-medium">Status:</p>
                           <span className={`font-bold capitalize ${bid.status === 'accepted' ? 'text-green-600' :
-                              bid.status === 'rejected' ? 'text-red-500' :
-                                'text-yellow-600'
+                            bid.status === 'rejected' ? 'text-red-500' :
+                              'text-yellow-600'
                             }`}>
                             {bid.status}
                           </span>
@@ -1332,12 +1336,111 @@ const ServiceProviderDashboard = () => {
       </div >
     )
   }
+
+  // Handle Report Printing
   const generateProviderReport = () => {
-    window.print()
+    setPrintMode('report')
+    setTimeout(() => {
+      window.print()
+    }, 100)
+  }
+
+  // Handle Invoice Generation
+  const generateInvoice = (bid: any) => {
+    setInvoiceData(bid)
+    setPrintMode('invoice')
+    setTimeout(() => {
+      window.print()
+    }, 100)
+  }
+
+  // Define Printable Invoice Content
+  const renderInvoice = () => {
+    if (!invoiceData) return null;
+    return (
+      <div className="hidden print:block p-8 bg-white text-black font-serif max-w-4xl mx-auto">
+        {/* Invoice Header */}
+        <div className="flex justify-between items-start border-b-2 border-gray-800 pb-6 mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 uppercase tracking-widest">Invoice</h1>
+            <p className="text-gray-600 mt-2">Invoice #: INV-{invoiceData._id.slice(-6).toUpperCase()}</p>
+            <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
+          </div>
+          <div className="text-right">
+            <h2 className="text-2xl font-bold text-blue-800">FarmConnect Service</h2>
+            <p className="text-gray-600 text-sm mt-1">Reliable Agricultural Services</p>
+          </div>
+        </div>
+
+        {/* Bill To / Bill From */}
+        <div className="flex justify-between mb-10">
+          <div>
+            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Bill From:</h3>
+            <p className="font-bold text-lg text-gray-900">{user?.name || 'Service Provider'}</p>
+            <p className="text-gray-700">{user?.email}</p>
+            <p className="text-gray-700">{user?.phone || 'Phone Not Available'}</p>
+          </div>
+          <div className="text-right">
+            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Bill To:</h3>
+            <p className="font-bold text-lg text-gray-900">{invoiceData.farmer?.name || 'Valued Farmer'}</p>
+            <p className="text-gray-700">ID: #{invoiceData.farmer?._id?.slice(-4)}</p>
+            <p className="text-gray-700 whitespace-pre-wrap max-w-xs ml-auto">{invoiceData.serviceRequest?.location || 'Location Not Provided'}</p>
+          </div>
+        </div>
+
+        {/* Line Items */}
+        <table className="w-full mb-8">
+          <thead>
+            <tr className="bg-gray-100 border-b border-gray-300">
+              <th className="text-left py-3 px-4 font-bold text-gray-700 uppercase text-sm">Description</th>
+              <th className="text-right py-3 px-4 font-bold text-gray-700 uppercase text-sm">Rate/Budget</th>
+              <th className="text-right py-3 px-4 font-bold text-gray-700 uppercase text-sm">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-gray-200">
+              <td className="py-4 px-4">
+                <p className="font-bold text-gray-900">{invoiceData.serviceRequest?.type || 'Service'} Job</p>
+                <p className="text-sm text-gray-600 mt-1">{invoiceData.serviceRequest?.description}</p>
+                <p className="text-xs text-gray-500 mt-1">Duration: {invoiceData.serviceRequest?.duration || 'Standard'}</p>
+              </td>
+              <td className="py-4 px-4 text-right text-gray-700">{invoiceData.serviceRequest?.budget || 'N/A'}</td>
+              <td className="py-4 px-4 text-right font-bold text-gray-900">{invoiceData.bidAmount}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Total Section */}
+        <div className="flex justify-end mb-12">
+          <div className="w-1/2 border-t-2 border-gray-800 pt-4">
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-600 font-medium">Subtotal</span>
+              <span className="font-bold text-gray-900">{invoiceData.bidAmount}</span>
+            </div>
+            <div className="flex justify-between mb-4">
+              <span className="text-gray-600 font-medium">Tax (0%)</span>
+              <span className="font-bold text-gray-900">₹0</span>
+            </div>
+            <div className="flex justify-between text-xl border-t border-gray-300 pt-4">
+              <span className="font-bold text-gray-900">Total Due</span>
+              <span className="font-bold text-blue-700">{invoiceData.bidAmount}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-gray-200 pt-8 text-center text-gray-500 text-sm">
+          <p>Thank you for choosing FarmConnect services. Please process the payment within 7 days.</p>
+          <p className="mt-1">For questions, contact support@farmconnect.com</p>
+        </div>
+      </div>
+    )
   }
 
   // Define Printable Report Content (Global Scope)
   const renderPrintableReport = () => {
+    if (printMode === 'invoice') return null; // Don't render report if in invoice mode
+
     // Recalculate stats for the report
     const acceptedBids = bids.filter(b => b.status === 'accepted')
     const totalEarnings = acceptedBids.reduce((sum, bid) => {
@@ -2314,6 +2417,15 @@ const ServiceProviderDashboard = () => {
               >
                 Close
               </button>
+              {selectedBidForDetail.status === 'accepted' && (
+                <button
+                  onClick={() => generateInvoice(selectedBidForDetail)}
+                  className="ml-3 px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg flex items-center"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Bill Now
+                </button>
+              )}
             </div>
           </motion.div>
         </div>
