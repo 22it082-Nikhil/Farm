@@ -1640,16 +1640,20 @@ const ServiceProviderDashboard = () => {
                     <div className="flex-1">
                       {/* Header */}
                       <div className="flex items-center gap-4 mb-6">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${bid.serviceRequest?.type === 'Vehicle' ? 'bg-blue-50 text-blue-600' :
-                          bid.serviceRequest?.type === 'Manpower' ? 'bg-orange-50 text-orange-600' :
-                            'bg-green-50 text-green-600'
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${(bid.offerType === 'broadcast_bid' ? bid.serviceBroadcast?.type : bid.serviceRequest?.type) === 'Vehicle' ? 'bg-blue-50 text-blue-600' :
+                            (bid.offerType === 'broadcast_bid' ? bid.serviceBroadcast?.type : bid.serviceRequest?.type) === 'Manpower' ? 'bg-orange-50 text-orange-600' :
+                              'bg-green-50 text-green-600'
                           }`}>
-                          {bid.serviceRequest?.type === 'Vehicle' ? <Truck className="w-6 h-6" /> :
-                            bid.serviceRequest?.type === 'Manpower' ? <Users className="w-6 h-6" /> :
+                          {(bid.offerType === 'broadcast_bid' ? bid.serviceBroadcast?.type : bid.serviceRequest?.type) === 'Vehicle' ? <Truck className="w-6 h-6" /> :
+                            (bid.offerType === 'broadcast_bid' ? bid.serviceBroadcast?.type : bid.serviceRequest?.type) === 'Manpower' ? <Users className="w-6 h-6" /> :
                               <Briefcase className="w-6 h-6" />}
                         </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-lg">{bid.serviceRequest?.type || 'Service'} Request</h3>
+                          <h3 className="font-bold text-gray-900 text-lg">
+                            {bid.offerType === 'broadcast_bid'
+                              ? `Incoming Bid for ${bid.serviceBroadcast?.title || 'Service'}`
+                              : `${bid.serviceRequest?.type || 'Service'} Request`}
+                          </h3>
                           <p className="text-gray-500 text-sm font-medium">{bid.farmer?.name || 'Unknown Farmer'}</p>
                         </div>
                       </div>
@@ -1657,16 +1661,24 @@ const ServiceProviderDashboard = () => {
                       {/* Info Grid */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         <div>
-                          <p className="text-sm text-gray-500 mb-1 font-medium">Your Bid:</p>
+                          <p className="text-sm text-gray-500 mb-1 font-medium">{bid.offerType === 'broadcast_bid' ? 'Offered Amount:' : 'Your Bid:'}</p>
                           <p className="font-bold text-blue-600">{bid.bidAmount}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 mb-1 font-medium">Location:</p>
-                          <p className="font-bold text-gray-900 truncate max-w-[180px]">{bid.serviceRequest?.location || 'Unknown'}</p>
+                          <p className="font-bold text-gray-900 truncate max-w-[180px]">
+                            {bid.offerType === 'broadcast_bid'
+                              ? bid.serviceBroadcast?.location
+                              : bid.serviceRequest?.location || 'Unknown'}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 mb-1 font-medium">Budget:</p>
-                          <p className="font-bold text-green-600">{bid.serviceRequest?.budget ? `₹${bid.serviceRequest.budget}` : 'N/A'}</p>
+                          <p className="font-bold text-green-600">
+                            {bid.offerType === 'broadcast_bid'
+                              ? (bid.serviceBroadcast?.budget ? `₹${bid.serviceBroadcast.budget}` : 'N/A')
+                              : (bid.serviceRequest?.budget ? `₹${bid.serviceRequest.budget}` : 'N/A')}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 mb-1 font-medium">Status:</p>
