@@ -1386,6 +1386,150 @@ const ServiceProviderDashboard = () => {
     }
   }
 
+  // Define Printable Cash Memo Content (Strict Format matching uploaded image)
+  const renderCashMemo = () => {
+    if (!invoiceData) return null;
+
+    const invoiceDate = new Date().toLocaleDateString();
+
+    // Use Provider Details for "Company" (Bill From)
+    const companyName = user?.name || 'Service Provider';
+    const companyAddress = user?.location || 'Address Not Provided';
+    const companyPhone = user?.phone || '';
+
+    // Farmer Details for "To" (Bill To)
+    const billToName = invoiceData.farmer?.name || 'Valued Farmer';
+    const billToAddress = invoiceData.farmer?.location || invoiceData.serviceRequest?.location || '';
+    const billToPhone = invoiceData.farmer?.phone || '';
+
+    return (
+      <div className="hidden print:block bg-white text-black font-serif max-w-[210mm] mx-auto p-4 h-screen box-border">
+        {/* Main Outer Border (Rounded Corners as per Cash Memo) */}
+        <div className="border-2 border-black rounded-3xl h-[95vh] flex flex-col relative overflow-hidden">
+
+          {/* Header Section */}
+          <div className="flex p-4 border-b-2 border-black">
+            {/* Logo Placeholder (Left) */}
+            <div className="w-24 h-24 border-2 border-black rounded-full flex items-center justify-center mr-6 shrink-0">
+              <span className="font-bold text-xl">LOGO</span>
+            </div>
+
+            {/* Company Details (Center) */}
+            <div className="flex-grow text-center">
+              <h4 className="font-bold text-sm uppercase tracking-wide mb-1">Bill / Cash Memo</h4>
+              <h1 className="font-bold text-3xl uppercase mb-2">{companyName}</h1>
+              <p className="text-sm px-8 leading-tight">{companyAddress}</p>
+              <p className="text-sm font-bold mt-1">Phone: {companyPhone}</p>
+            </div>
+
+            {/* Right Side Meta (Bill No, Date) */}
+            <div className="text-right w-48 text-sm shrink-0 flex flex-col justify-between">
+              <div>
+                <p><span className="font-bold">Bill No:</span> {invoiceData._id.slice(-6).toUpperCase()}</p>
+              </div>
+              <div>
+                <span className="font-bold mr-2">Date:</span> {invoiceDate}
+              </div>
+            </div>
+          </div>
+
+          {/* 'To' Section (Buyer Details) */}
+          <div className="border-b-2 border-black p-2 flex items-start">
+            <span className="font-bold mt-1 mr-2 text-lg">To:</span>
+            <div className="flex-grow">
+              <div className="border-b border-black border-dotted mb-1 pb-1 font-bold text-lg min-h-[30px] flex items-end">
+                {billToName}
+              </div>
+              <div className="border-b border-black border-dotted mb-1 pb-1 text-sm min-h-[24px] flex items-end">
+                {billToAddress}
+              </div>
+              <div className="border-b border-black border-dotted pb-1 text-sm min-h-[24px] flex items-end">
+                Phone: {billToPhone}
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle / Type Info Line */}
+          <div className="border-b-2 border-black flex text-sm">
+            <div className="w-1/2 border-r-2 border-black p-1 px-2">
+              <span className="font-bold">Service Type:</span> {invoiceData.serviceRequest?.type || 'Service'}
+            </div>
+            <div className="w-1/2 p-1 px-2">
+              <span className="font-bold">Job ID:</span> #{invoiceData._id.slice(-4)}
+            </div>
+          </div>
+
+          {/* Main Table Headers */}
+          <div className="flex border-b-2 border-black font-bold text-center text-sm bg-gray-50">
+            <div className="w-16 border-r-2 border-black p-2">SL.No</div>
+            <div className="flex-grow border-r-2 border-black p-2">PARTICULARS</div>
+            <div className="w-24 border-r-2 border-black p-2">RATE</div>
+            <div className="w-32 p-2">AMOUNT</div>
+          </div>
+
+          {/* Table Body (Full Height) */}
+          <div className="flex-grow flex relative">
+            {/* Vertical Lines Overlay (Absolute positioning to ensure full height lines) */}
+            <div className="absolute inset-0 flex pointer-events-none">
+              <div className="w-16 border-r-2 border-black h-full"></div>
+              <div className="flex-grow border-r-2 border-black h-full"></div>
+              <div className="w-24 border-r-2 border-black h-full"></div>
+              <div className="w-32 h-full"></div>
+            </div>
+
+            {/* Content Rows */}
+            <div className="w-full z-10 text-sm">
+              {/* Row 1: The Main Service */}
+              <div className="flex">
+                <div className="w-16 p-2 text-center">1</div>
+                <div className="flex-grow p-2">
+                  <p className="font-bold uppercase mb-1">{invoiceData.serviceRequest?.type} Service</p>
+                  <p className="ml-4 italic mb-1">- {invoiceData.serviceRequest?.description}</p>
+                  <p className="ml-4 text-xs">Duration: {invoiceData.serviceRequest?.duration}</p>
+                </div>
+                <div className="w-24 p-2 text-right">{invoiceData.bidAmount}</div>
+                <div className="w-32 p-2 text-right font-bold">{invoiceData.bidAmount}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Total Section */}
+          <div className="border-t-2 border-black flex font-bold text-sm">
+            <div className="flex-grow p-2 border-r-2 border-black text-right uppercase pr-4 flex items-center justify-end">
+              Total Amount
+            </div>
+            <div className="w-32 p-2 text-right text-lg">
+              {invoiceData.bidAmount}
+            </div>
+          </div>
+
+          {/* Amount in Words */}
+          <div className="border-t-2 border-black p-2 text-sm border-b-2 border-black flex">
+            <span className="font-bold mr-2 whitespace-nowrap">Amount in Words:</span>
+            <span className="italic underline decoration-dotted flex-grow">Rupees {invoiceData.bidAmount} Only</span>
+          </div>
+
+          {/* Footer / Signatory */}
+          <div className="h-40 p-4 pt-2 flex justify-between items-end">
+            <div className="text-xs max-w-sm">
+              <p className="font-bold underline mb-1">Terms and Conditions:</p>
+              <ol className="list-decimal pl-4 space-y-0.5">
+                <li>Goods/Services once provided will not be refunded.</li>
+                <li>Payment must be made immediately upon service completion.</li>
+                <li>Subject to local jurisdiction.</li>
+              </ol>
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-bold mb-10">For {companyName}</p>
+              <p className="text-xs uppercase border-t border-black pt-1 px-4">Authorized Signatory</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    )
+  }
+
   // Define Printable Invoice Content
   const renderInvoice = () => {
     if (!invoiceData) return null;
@@ -2125,7 +2269,7 @@ const ServiceProviderDashboard = () => {
         ))}
       </div>
       {/* Global Printable Report (Visible ONLY when printing) */}
-      {renderPrintableReport()}
+      {printMode === 'invoice' ? renderCashMemo() : renderPrintableReport()}
 
       {/* Main Dashboard UI (Hidden when printing) */}
       <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 print:hidden">
