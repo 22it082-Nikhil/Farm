@@ -430,7 +430,7 @@ const ServiceProviderDashboard = () => {
   const handleSubmitBid = async (job: any) => {
     const rawBudget = job.budget ? job.budget.replace(/[^0-9]/g, '') : ''
     // Pre-fill with budget number
-    const bidAmountInput = prompt(`Enter your bid amount for this job (Budget: ${job.budget || 'N/A'}):`, rawBudget)
+    const bidAmountInput = prompt(`Enter your bid amount for this job (Budget: ₹${rawBudget || 'N/A'}):`, rawBudget)
 
     if (!bidAmountInput) return
 
@@ -926,7 +926,7 @@ const ServiceProviderDashboard = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {bid.serviceRequest?.budget || 'N/A'}
+                      {bid.serviceRequest?.budget ? `₹${bid.serviceRequest.budget}` : 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-green-600">{bid.bidAmount}</div>
@@ -981,7 +981,7 @@ const ServiceProviderDashboard = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Budget:</span>
-                  <span className="font-medium text-gray-600">{bid.serviceRequest?.budget || 'N/A'}</span>
+                  <span className="font-medium text-gray-600">{bid.serviceRequest?.budget ? `₹${bid.serviceRequest.budget}` : 'N/A'}</span>
                 </div>
               </div>
 
@@ -1074,7 +1074,7 @@ const ServiceProviderDashboard = () => {
                     </div>
                     <div>
                       <span className="text-gray-600">Budget:</span>
-                      <p className="font-medium text-green-600">{job.budget || 'Negotiable'}</p>
+                      <p className="font-medium text-green-600">{job.budget ? (job.budget.toString().includes('₹') ? job.budget : `₹${job.budget}`) : 'Negotiable'}</p>
                     </div>
                     <div>
                       <span className="text-gray-600">Status:</span>
@@ -1304,7 +1304,7 @@ const ServiceProviderDashboard = () => {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 mb-1 font-medium">Budget:</p>
-                          <p className="font-bold text-green-600">{bid.serviceRequest?.budget || 'N/A'}</p>
+                          <p className="font-bold text-green-600">{bid.serviceRequest?.budget ? `₹${bid.serviceRequest.budget}` : 'N/A'}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 mb-1 font-medium">Status:</p>
@@ -1629,7 +1629,7 @@ const ServiceProviderDashboard = () => {
                     {invoiceData.serviceRequest?.duration || 'Fixed'}
                   </td>
                   <td className="p-4 border-r border-gray-900 align-top text-right text-gray-600">
-                    {invoiceData.serviceRequest?.budget || '-'}
+                    {invoiceData.serviceRequest?.budget ? `₹${invoiceData.serviceRequest.budget}` : '-'}
                   </td>
                   <td className="p-4 align-top text-right font-bold text-gray-900">
                     {invoiceData.bidAmount}
@@ -2640,7 +2640,7 @@ const ServiceProviderDashboard = () => {
                   </div>
                   <div className="text-center p-3 rounded-lg bg-gray-50">
                     <span className="block text-xs text-gray-500 font-bold uppercase">Budget</span>
-                    <span className="block text-xl font-bold text-gray-700">{selectedBidForDetail.serviceRequest?.budget || 'N/A'}</span>
+                    <span className="block text-xl font-bold text-gray-700">{selectedBidForDetail.serviceRequest?.budget ? `₹${selectedBidForDetail.serviceRequest.budget}` : 'N/A'}</span>
                   </div>
                   <div className="text-center p-3 rounded-lg bg-gray-50">
                     <span className="block text-xs text-gray-500 font-bold uppercase">Status</span>
