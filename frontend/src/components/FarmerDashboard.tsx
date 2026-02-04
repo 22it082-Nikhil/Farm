@@ -1975,11 +1975,11 @@ const FarmerDashboard = () => {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Quantity:</span>
-                <span className="font-medium">{crop.quantity} Kg</span>
+                <span className="font-medium">{crop.quantity}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Price:</span>
-                <span className="font-medium text-green-600">{crop.price.includes('₹') ? crop.price : `₹${crop.price}/kg`}</span>
+                <span className="font-medium text-green-600">{crop.price}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Status:</span>
@@ -3613,20 +3613,10 @@ const FarmerDashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
-      case 'buyer-needs': return renderBuyerRequirements()
       case 'crops': return renderCrops()
-      case 'sold_crops': return renderSoldCrops() // Render Sold Crops
       case 'services': return renderServices()
       case 'available_services': return renderAvailableServices()
-      case 'broadcasts': return renderBroadcasts() // New Service Broadcasts Browsing
-      case 'rentals': return renderRentals()
-      case 'market': return renderMarketPrices()
-      case 'calendar': return renderCalendar()
       case 'offers': return renderOffers()
-      case 'reports': return renderReports()
-      case 'chats': return (
-        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="farmer" /> : <div>Loading...</div>
-      )
       case 'profile': return renderProfile()
       default: return renderOverview()
     }
@@ -3719,17 +3709,9 @@ const FarmerDashboard = () => {
                 <nav className="mt-5 flex-1 px-2 space-y-1">
                   {[
                     { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
-                    { id: 'buyer-needs', name: 'Buyer Requirements', icon: <ShoppingCart className="w-5 h-5" /> }, // New Tab
                     { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
-                    { id: 'sold_crops', name: 'Sold Crops', icon: <ShoppingBag className="w-5 h-5" /> }, // Sold Crops Tab
                     { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
                     { id: 'available_services', name: 'Service Available', icon: <Truck className="w-5 h-5" /> },
-                    { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> }, // New Tab
-                    { id: 'rentals', name: 'My Rentals', icon: <Warehouse className="w-5 h-5" /> },
-                    { id: 'calendar', name: 'Calendar & Tasks', icon: <CalendarIcon className="w-5 h-5" /> },
-                    { id: 'market', name: 'Market Prices', icon: <BarChart3 className="w-5 h-5" /> },
-                    { id: 'reports', name: 'Reports', icon: <FileText className="w-5 h-5" /> },
-                    { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                     { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                   ].map((item) => (
                     <button

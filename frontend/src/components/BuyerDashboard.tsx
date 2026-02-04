@@ -674,13 +674,6 @@ const BuyerDashboard = () => {
               Browse Crops
             </button>
             <button
-              onClick={() => setActiveTab('saved')}
-              className="w-full btn-outline text-left py-3 px-4"
-            >
-              <Heart className="w-4 h-4 mr-2 inline" />
-              View Saved Items
-            </button>
-            <button
               onClick={() => setActiveTab('orders')}
               className="w-full btn-outline text-left py-3 px-4"
             >
@@ -807,11 +800,11 @@ const BuyerDashboard = () => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Quantity:</span> {/* Quantity label */}
-                  <span className="font-medium">{crop.quantity} Kg</span> {/* Available quantity */}
+                  <span className="font-medium">{crop.quantity}</span> {/* Available quantity */}
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Price:</span> {/* Price label */}
-                  <span className="font-medium text-green-600">{crop.price.toString().includes('₹') ? crop.price : `₹${crop.price}/kg`}</span> {/* Price per kg */}
+                  <span className="font-medium text-green-600">{crop.price}</span> {/* Price per kg */}
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Status:</span> {/* Status label */}
@@ -1035,7 +1028,7 @@ const BuyerDashboard = () => {
                 {/* Action buttons for order management */}
                 <div className="flex flex-col space-y-2">
                   <button
-                    onClick={() => handleStartChat(order._id)}
+                    // onClick={() => handleStartChat(order._id)} // Logic hidden as per user request
                     className="flex items-center justify-center w-full px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors"
                   >
                     <MessageSquare className="w-4 h-4 mr-2" />
@@ -1043,7 +1036,7 @@ const BuyerDashboard = () => {
                   </button>
 
                   <button
-                    onClick={() => handleViewOrderDetails(order)}
+                    // onClick={() => handleViewOrderDetails(order)} // Logic hidden as per user request
                     className="btn-primary text-sm py-2 px-4"
                   >
                     View Details
@@ -1131,9 +1124,9 @@ const BuyerDashboard = () => {
               </div>
               {/* Saved crop details with price and saved date */}
               <div className="space-y-2 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Price:</span> {/* Price label */}
-                  <span className="font-medium text-green-600">{crop.price.toString().includes('₹') ? crop.price : `₹${crop.price}/kg`}</span> {/* Current price */}
+                <div className="flex justify-between items-center bg-gray-50 p-2 rounded-lg">
+                  <span className="text-sm text-gray-600">Current Price</span>
+                  <span className="font-medium text-green-600">{crop.price}</span> {/* Current price */}
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Status:</span> {/* Saved date label */}
@@ -1573,9 +1566,6 @@ const BuyerDashboard = () => {
       case 'overview': return renderOverview() // Shows dashboard overview with stats and activities
       case 'crops': return renderCrops() // Shows available crops for purchase
       case 'orders': return renderOrders() // Shows buyer's current and past orders
-      case 'saved': return renderSaved() // Shows saved crops in wishlist
-      case 'reports': return renderReports() // Shows financial reports
-      case 'trends': return renderMarketTrends() // Market Trends Section
       case 'profile': return renderProfile() // Shows user profile
       default: return renderOverview() // Default to overview if no tab is selected
     }
@@ -1949,13 +1939,8 @@ const BuyerDashboard = () => {
                 {/* Navigation menu items array with icons and labels */}
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> }, // Dashboard overview
-                  { id: 'requirements', name: 'Post Requirements', icon: <ClipboardList className="w-5 h-5" /> }, // New Req Tab
-                  { id: 'trends', name: 'Market Trends', icon: <TrendingUp className="w-5 h-5" /> }, // Market Trends
                   { id: 'crops', name: 'Browse Crops', icon: <Crop className="w-5 h-5" /> }, // Available crops
                   { id: 'orders', name: 'My Orders', icon: <Package className="w-5 h-5" /> }, // Order management
-                  { id: 'saved', name: 'Saved Items', icon: <Heart className="w-5 h-5" /> }, // Wishlist
-                  { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> }, // Analytics
-                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> }, // Chat System
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> } // User profile
                 ].map((item) => ( // Maps through navigation items to create menu buttons
                   <button

@@ -1099,7 +1099,10 @@ const ServiceProviderDashboard = () => {
                 <Search className="w-4 h-4 mr-2 inline" />
                 Browse Jobs
               </button>
-              <button onClick={generateProviderReport} className="w-full btn-outline text-left py-3 px-4">
+              <button
+                // onClick={generateProviderReport} // Hidden logic as per user request
+                className="w-full btn-outline text-left py-3 px-4"
+              >
                 <FileText className="w-4 h-4 mr-2 inline" />
                 Generate Report
               </button>
@@ -1455,7 +1458,8 @@ const ServiceProviderDashboard = () => {
           >
             List View
           </button>
-          <button
+          {/* Map View button hidden as per user request */}
+          {/* <button
             onClick={() => setJobViewMode('map')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${jobViewMode === 'map'
               ? 'bg-blue-100 text-blue-700 shadow-sm'
@@ -1463,7 +1467,7 @@ const ServiceProviderDashboard = () => {
               }`}
           >
             Map View
-          </button>
+          </button> */}
         </div>
       </motion.div>
 
@@ -1521,13 +1525,13 @@ const ServiceProviderDashboard = () => {
                   {/* Only show chat button if provider has already submitted a bid for this job */}
                   {bids.some(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id) && (
                     <button
-                      onClick={() => {
-                        // Find the bid/offer for this job
-                        const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
-                        if (myBid) {
-                          handleStartChat(myBid._id);
-                        }
-                      }}
+                      // onClick={() => { // Hidden logic as per user request
+                      //   // Find the bid/offer for this job
+                      //   const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
+                      //   if (myBid) {
+                      //     handleStartChat(myBid._id);
+                      //   }
+                      // }}
                       className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
@@ -1626,7 +1630,8 @@ const ServiceProviderDashboard = () => {
               >
                 List
               </button>
-              <button
+              {/* Map button hidden as per user request */}
+              {/* <button
                 onClick={() => setBidViewMode('map')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${bidViewMode === 'map'
                   ? 'bg-blue-100 text-blue-700 shadow-sm'
@@ -1634,7 +1639,7 @@ const ServiceProviderDashboard = () => {
                   }`}
               >
                 Map
-              </button>
+              </button> */}
               <button
                 onClick={() => setBidViewMode('calendar')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${bidViewMode === 'calendar'
@@ -1801,7 +1806,7 @@ const ServiceProviderDashboard = () => {
                     {/* Right Side: Actions */}
                     <div className="ml-6 flex flex-col gap-3">
                       <button
-                        onClick={() => setSelectedBidForDetail(bid)}
+                        // onClick={() => setSelectedBidForDetail(bid)} // Hidden logic as per user request
                         className="px-6 py-2 bg-white border border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition-colors text-sm font-bold shadow-sm whitespace-nowrap"
                       >
                         View Details
@@ -2734,14 +2739,14 @@ const ServiceProviderDashboard = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
       case 'services': return renderServices()
-      case 'broadcasts': return renderBroadcasts() // New Render Function
+      // case 'broadcasts': return renderBroadcasts() // Commented out
       case 'jobs': return renderJobs()
       case 'bids': return renderBids()
-      case 'history': return renderAcceptedBids()
-      case 'reports': return renderReports()
-      case 'chats': return (
-        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="provider" /> : <div>Loading...</div>
-      )
+      // case 'history': return renderAcceptedBids() // Commented out
+      // case 'reports': return renderReports() // Commented out
+      // case 'chats': return (
+      //   user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="provider" /> : <div>Loading...</div>
+      // ) // Commented out
       case 'profile': return renderProfile()
       default: return renderOverview()
     }
@@ -2846,12 +2851,12 @@ const ServiceProviderDashboard = () => {
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
                   { id: 'services', name: 'My Services', icon: <Wrench className="w-5 h-5" /> },
-                  { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> }, // New Tab
+                  // { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> }, // Commented out
                   { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
                   { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
-                  { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> },
-                  { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> },
-                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
+                  // { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> }, // Commented out
+                  // { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> }, // Commented out
+                  // { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> }, // Commented out
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                 ].map((item) => (
                   <button
