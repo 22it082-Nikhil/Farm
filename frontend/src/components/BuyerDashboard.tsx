@@ -1939,8 +1939,10 @@ const BuyerDashboard = () => {
                 {/* Navigation menu items array with icons and labels */}
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> }, // Dashboard overview
+                  { id: 'requirements', name: 'Post Requirements', icon: <ClipboardList className="w-5 h-5" /> },
                   { id: 'crops', name: 'Browse Crops', icon: <Crop className="w-5 h-5" /> }, // Available crops
                   { id: 'orders', name: 'My Orders', icon: <Package className="w-5 h-5" /> }, // Order management
+                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> } // User profile
                 ].map((item) => ( // Maps through navigation items to create menu buttons
                   <button
