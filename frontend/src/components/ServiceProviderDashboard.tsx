@@ -1525,13 +1525,12 @@ const ServiceProviderDashboard = () => {
                   {/* Only show chat button if provider has already submitted a bid for this job */}
                   {bids.some(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id) && (
                     <button
-                      // onClick={() => { // Hidden logic as per user request
-                      //   // Find the bid/offer for this job
-                      //   const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
-                      //   if (myBid) {
-                      //     handleStartChat(myBid._id);
-                      //   }
-                      // }}
+                      onClick={() => {
+                        const myBid = bids.find(bid => bid.serviceRequest?._id === job._id || bid.serviceRequest === job._id);
+                        if (myBid) {
+                          handleStartChat(myBid._id);
+                        }
+                      }}
                       className="flex items-center justify-center px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors"
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
