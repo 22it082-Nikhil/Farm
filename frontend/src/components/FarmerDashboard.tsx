@@ -3613,10 +3613,15 @@ const FarmerDashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
+      case 'buyer-needs': return renderBuyerRequirements()
       case 'crops': return renderCrops()
       case 'services': return renderServices()
       case 'available_services': return renderAvailableServices()
+      case 'broadcasts': return renderBroadcasts()
       case 'offers': return renderOffers()
+      case 'chats': return (
+        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="farmer" /> : <div>Loading...</div>
+      )
       case 'profile': return renderProfile()
       default: return renderOverview()
     }
@@ -3709,9 +3714,12 @@ const FarmerDashboard = () => {
                 <nav className="mt-5 flex-1 px-2 space-y-1">
                   {[
                     { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
+                    { id: 'buyer-needs', name: 'Buyer Requirements', icon: <ShoppingCart className="w-5 h-5" /> },
                     { id: 'crops', name: 'My Crops', icon: <Leaf className="w-5 h-5" /> },
                     { id: 'services', name: 'Service Requests', icon: <Truck className="w-5 h-5" /> },
                     { id: 'available_services', name: 'Service Available', icon: <Truck className="w-5 h-5" /> },
+                    { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> },
+                    { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                     { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                   ].map((item) => (
                     <button
