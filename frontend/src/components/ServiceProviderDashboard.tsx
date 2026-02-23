@@ -2739,14 +2739,12 @@ const ServiceProviderDashboard = () => {
     switch (activeTab) {
       case 'overview': return renderOverview()
       case 'services': return renderServices()
-      // case 'broadcasts': return renderBroadcasts() // Commented out
+      case 'broadcasts': return renderBroadcasts()
       case 'jobs': return renderJobs()
       case 'bids': return renderBids()
-      // case 'history': return renderAcceptedBids() // Commented out
-      // case 'reports': return renderReports() // Commented out
-      // case 'chats': return (
-      //   user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="provider" /> : <div>Loading...</div>
-      // ) // Commented out
+      case 'chats': return (
+        user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="provider" /> : <div>Loading...</div>
+      )
       case 'profile': return renderProfile()
       default: return renderOverview()
     }
@@ -2851,12 +2849,10 @@ const ServiceProviderDashboard = () => {
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> },
                   { id: 'services', name: 'My Services', icon: <Wrench className="w-5 h-5" /> },
-                  // { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> }, // Commented out
+                  { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> },
                   { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
                   { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
-                  // { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> }, // Commented out
-                  // { id: 'reports', name: 'Reports', icon: <BarChart3 className="w-5 h-5" /> }, // Commented out
-                  // { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> }, // Commented out
+                  { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                 ].map((item) => (
                   <button
