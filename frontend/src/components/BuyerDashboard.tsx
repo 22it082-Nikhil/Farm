@@ -1028,7 +1028,7 @@ const BuyerDashboard = () => {
                 {/* Action buttons for order management */}
                 <div className="flex flex-col space-y-2">
                   <button
-                    // onClick={() => handleStartChat(order._id)} // Logic hidden as per user request
+                    onClick={() => handleStartChat(order._id)} // Logic hidden as per user request
                     className="flex items-center justify-center w-full px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition-colors"
                   >
                     <MessageSquare className="w-4 h-4 mr-2" />
