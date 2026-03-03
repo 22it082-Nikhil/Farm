@@ -644,48 +644,54 @@ function FinalCTA() {
 // ─────────────────────────────────────────────
 function Footer() {
   return (
-    <footer style={{ background: '#040a03' }} className="text-white py-16 border-t border-white/5">
+    <footer
+      className="text-white py-16"
+      style={{
+        background: 'linear-gradient(180deg, #f4fbf5 0%, #c8e8cc 15%, #4a9e56 35%, #1a5225 60%, #0d2010 80%, #061008 100%)',
+        borderTop: 'none'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="md:col-span-1">
             <div className="flex items-center mb-4">
               <img src="/logo.png" alt="FarmConnect Logo" className="w-11 h-11 rounded-lg object-contain -mr-1" style={{ filter: 'brightness(0) invert(1)' }} />
-              <span className="text-xl font-black text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>FarmConnect</span>
+              <span className="text-xl font-black text-white drop-shadow-md" style={{ fontFamily: 'Poppins, sans-serif' }}>FarmConnect</span>
             </div>
-            <p className="text-white/35 text-sm leading-relaxed">
+            <p className="text-white/70 text-sm leading-relaxed drop-shadow-sm">
               Revolutionizing agriculture through technology, transparency and community.
             </p>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-4 text-sm tracking-wide uppercase">Platform</h4>
-            <ul className="space-y-2.5 text-white/35 text-sm">
-              <li><a href="#features" className="hover:text-emerald-400 transition-colors">Features</a></li>
-              <li><a href="#modules" className="hover:text-emerald-400 transition-colors">Modules</a></li>
-              <li><a href="/login" className="hover:text-emerald-400 transition-colors">Login</a></li>
+            <h4 className="text-white font-bold mb-4 text-sm tracking-wide uppercase drop-shadow-sm">Platform</h4>
+            <ul className="space-y-2.5 text-white/60 text-sm">
+              <li><a href="#features" className="hover:text-emerald-200 transition-colors">Features</a></li>
+              <li><a href="#modules" className="hover:text-emerald-200 transition-colors">Modules</a></li>
+              <li><a href="/login" className="hover:text-emerald-200 transition-colors">Login</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-4 text-sm tracking-wide uppercase">Support</h4>
-            <ul className="space-y-2.5 text-white/35 text-sm">
-              <li><a href="#" className="hover:text-emerald-400 transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-emerald-400 transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-emerald-400 transition-colors">Community</a></li>
+            <h4 className="text-white font-bold mb-4 text-sm tracking-wide uppercase drop-shadow-sm">Support</h4>
+            <ul className="space-y-2.5 text-white/60 text-sm">
+              <li><a href="#" className="hover:text-emerald-200 transition-colors">Help Center</a></li>
+              <li><a href="#" className="hover:text-emerald-200 transition-colors">Contact Us</a></li>
+              <li><a href="#" className="hover:text-emerald-200 transition-colors">Community</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-4 text-sm tracking-wide uppercase">Connect</h4>
-            <ul className="space-y-2.5 text-white/35 text-sm">
-              <li><a href="#" className="hover:text-emerald-400 transition-colors">Twitter</a></li>
-              <li><a href="#" className="hover:text-emerald-400 transition-colors">LinkedIn</a></li>
-              <li><a href="#" className="hover:text-emerald-400 transition-colors">Blog</a></li>
+            <h4 className="text-white font-bold mb-4 text-sm tracking-wide uppercase drop-shadow-sm">Connect</h4>
+            <ul className="space-y-2.5 text-white/60 text-sm">
+              <li><a href="#" className="hover:text-emerald-200 transition-colors">Twitter</a></li>
+              <li><a href="#" className="hover:text-emerald-200 transition-colors">LinkedIn</a></li>
+              <li><a href="#" className="hover:text-emerald-200 transition-colors">Blog</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/5 pt-8 text-center text-white/25 text-sm">
+        <div className="border-t border-white/20 pt-8 text-center text-white/50 text-sm">
           © 2026 FarmConnect. All rights reserved.
         </div>
       </div>
