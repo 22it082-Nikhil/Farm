@@ -707,7 +707,7 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="md:col-span-1">
             <div className="flex items-center mb-4">
-              <img src="/logo.png" alt="FarmConnect Logo" className="w-11 h-11 rounded-lg object-contain -mr-1" />
+              <img src="/logo.png" alt="FarmConnect Logo" className="w-11 h-11 rounded-lg object-contain -mr-1" style={{ filter: 'brightness(0) invert(1)' }} />
               <span className="text-xl font-black text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>FarmConnect</span>
             </div>
             <p className="text-white/35 text-sm leading-relaxed">
@@ -782,7 +782,7 @@ function Navbar() {
             className="flex items-center gap-1 cursor-pointer"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 rounded-lg object-contain" />
+            <img src="/logo.png" alt="FarmConnect Logo" className="w-10 h-10 rounded-lg object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
             <span className="text-xl font-black text-white" style={{ fontFamily: 'Poppins, sans-serif' }}>FarmConnect</span>
           </motion.div>
 
