@@ -225,106 +225,156 @@ const HomePage = () => {
         </div>
       </nav>
 
-      {/* Hero Section with scroll-based canvas animation */}
+      {/* Hero Section */}
       <section className="pt-24 pb-16">
-        {/* Loading overlay while frames are being fetched */}
-        {!imagesLoaded && (
-          <div className="fixed inset-0 z-40 bg-white/90 flex flex-col items-center justify-center">
-            <div className="w-64 h-2 bg-emerald-100 rounded-full overflow-hidden mb-4">
-              <motion.div
-                className="h-full bg-gradient-to-r from-primary-500 to-emerald-500"
-                initial={{ width: '0%' }}
-                animate={{ width: `${loadProgress}%` }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-            <p className="text-emerald-700 text-lg font-semibold">
-              Preparing your farm experience... {Math.round(loadProgress)}%
-            </p>
-          </div>
-        )}
-
-        <div ref={containerRef} className="relative h-[450vh]">
-          <div className="sticky top-16 md:top-20 h-[calc(100vh-4rem)]">
-            <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50">
-              {/* Canvas */}
-              <motion.div style={{ y: yOffset }} className="w-full h-full">
-                <canvas ref={canvasRef} className="w-full h-full" />
-              </motion.div>
-
-              {/* Text overlays */}
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                {/* Section 1: Main headline */}
-                <motion.div
-                  style={{ opacity: section1Opacity }}
-                  className="text-center px-4"
-                >
-                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
-                    <span className="gradient-text bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent">
-                      Revolutionizing
-                    </span>
-                    <br />
-                    <span className="text-gray-800">Agriculture</span>
-                  </h1>
-                  <p className="text-lg md:text-2xl text-gray-700 max-w-3xl mx-auto">
-                    Connect farmers, service providers, and buyers in one seamless platform.
-                  </p>
-                </motion.div>
-
-                {/* Section 2: Platform value */}
-                <motion.div
-                  style={{ opacity: section2Opacity }}
-                  className="text-left px-6 md:px-16 max-w-2xl"
-                >
-                  <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-                     End-to-End Farm Management
-                  </h2>
-                  <p className="text-base md:text-xl text-gray-700">
-                    From harvest planning to logistics and sales, FarmConnect helps you streamline operations
-                    and unlock better margins on every crop.
-                  </p>
-                </motion.div>
-
-                {/* Section 3: Call-to-action content */}
-                <motion.div
-                  style={{ opacity: section3Opacity }}
-                  className="text-center px-6 max-w-3xl mx-auto"
-                >
-                  <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
-                    One Platform. Every Stakeholder.
-                  </h2>
-                  <p className="text-base md:text-xl text-gray-700 mb-8">
-                    Farmers, service providers, and buyers work together in real time to move harvests faster
-                    and more efficiently.
-                  </p>
-                  <div className="pointer-events-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="/login" className="btn-primary text-lg px-8 py-4 inline-flex items-center">
-                      Explore Modules
-                      <ArrowRight className="w-5 h-5 ml-2 inline" />
-                    </a>
-                    <button className="btn-outline text-lg px-8 py-4">
-                      Watch Demo
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Scroll indicator */}
-              <motion.div
-                style={{ opacity: scrollIndicatorOpacity }}
-                className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+        {/* Mobile: original static hero */}
+        <div className="px-4 sm:px-6 lg:px-8 md:hidden">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center">
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-5xl md:text-7xl font-bold text-gray-900 mb-6"
               >
-                <p className="text-sm text-gray-600 tracking-wider uppercase">
-                  Scroll to explore
-                </p>
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="w-6 h-10 border-2 border-emerald-400/70 rounded-full flex items-start justify-center p-1"
-                >
-                  <div className="w-1 h-3 bg-emerald-500 rounded-full" />
-                </motion.div>
+                <span className="gradient-text bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent">
+                  Revolutionizing
+                </span>
+                <br />
+                <span className="text-gray-800">Agriculture</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
+              >
+                Connect farmers, service providers, and buyers in one seamless platform.
+                Streamline your agricultural operations and maximize your profits.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              >
+                <a href="/login" className="btn-primary text-lg px-8 py-4 inline-flex items-center">
+                  Explore Modules
+                  <ArrowRight className="w-5 h-5 ml-2 inline" />
+                </a>
+                <button className="btn-outline text-lg px-8 py-4">
+                  Watch Demo
+                </button>
               </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop / larger screens: scroll-based canvas animation */}
+        <div className="hidden md:block">
+          {/* Loading overlay while frames are being fetched */}
+          {!imagesLoaded && (
+            <div className="fixed inset-0 z-40 bg-white/90 flex flex-col items-center justify-center">
+              <div className="w-64 h-2 bg-emerald-100 rounded-full overflow-hidden mb-4">
+                <motion.div
+                  className="h-full bg-gradient-to-r from-primary-500 to-emerald-500"
+                  initial={{ width: '0%' }}
+                  animate={{ width: `${loadProgress}%` }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+              <p className="text-emerald-700 text-lg font-semibold">
+                Preparing your farm experience... {Math.round(loadProgress)}%
+              </p>
+            </div>
+          )}
+
+          <div ref={containerRef} className="relative h-[450vh] px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="sticky top-16 md:top-20 h-[calc(100vh-4rem)]">
+                <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50 rounded-3xl shadow-lg">
+                  {/* Canvas */}
+                  <motion.div style={{ y: yOffset }} className="w-full h-full">
+                    <canvas ref={canvasRef} className="w-full h-full" />
+                  </motion.div>
+
+                  {/* Text overlays */}
+                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                    {/* Section 1: Main headline */}
+                    <motion.div
+                      style={{ opacity: section1Opacity }}
+                      className="text-center px-8"
+                    >
+                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+                        <span className="gradient-text bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent">
+                          Revolutionizing
+                        </span>
+                        <br />
+                        <span className="text-gray-800">Agriculture</span>
+                      </h1>
+                      <p className="text-lg md:text-2xl text-gray-700 max-w-3xl mx-auto">
+                        Connect farmers, service providers, and buyers in one seamless platform.
+                      </p>
+                    </motion.div>
+
+                    {/* Section 2: Platform value */}
+                    <motion.div
+                      style={{ opacity: section2Opacity }}
+                      className="text-left px-16 max-w-2xl"
+                    >
+                      <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+                        End-to-End Farm Management
+                      </h2>
+                      <p className="text-base md:text-xl text-gray-700">
+                        From harvest planning to logistics and sales, FarmConnect helps you streamline operations
+                        and unlock better margins on every crop.
+                      </p>
+                    </motion.div>
+
+                    {/* Section 3: Call-to-action content */}
+                    <motion.div
+                      style={{ opacity: section3Opacity }}
+                      className="text-center px-8 max-w-3xl mx-auto"
+                    >
+                      <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+                        One Platform. Every Stakeholder.
+                      </h2>
+                      <p className="text-base md:text-xl text-gray-700 mb-8">
+                        Farmers, service providers, and buyers work together in real time to move harvests faster
+                        and more efficiently.
+                      </p>
+                      <div className="pointer-events-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <a href="/login" className="btn-primary text-lg px-8 py-4 inline-flex items-center">
+                          Explore Modules
+                          <ArrowRight className="w-5 h-5 ml-2 inline" />
+                        </a>
+                        <button className="btn-outline text-lg px-8 py-4">
+                          Watch Demo
+                        </button>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Scroll indicator */}
+                  <motion.div
+                    style={{ opacity: scrollIndicatorOpacity }}
+                    className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+                  >
+                    <p className="text-sm text-gray-600 tracking-wider uppercase">
+                      Scroll to explore
+                    </p>
+                    <motion.div
+                      animate={{ y: [0, 8, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                      className="w-6 h-10 border-2 border-emerald-400/70 rounded-full flex items-start justify-center p-1"
+                    >
+                      <div className="w-1 h-3 bg-emerald-500 rounded-full" />
+                    </motion.div>
+                  </motion.div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
