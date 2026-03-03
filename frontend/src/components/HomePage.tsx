@@ -16,7 +16,7 @@ const FRAME_PATH = '/frames'
 function HeroCanvasAnimation() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [images, setImages] = useState<HTMLImageElement[]>([])
+  const imagesRef = useRef<HTMLImageElement[]>([])
   const [imagesLoaded, setImagesLoaded] = useState(false)
   const [loadProgress, setLoadProgress] = useState(0)
 
@@ -25,18 +25,20 @@ function HeroCanvasAnimation() {
     offset: ['start start', 'end start']
   })
 
+  // Tighter spring = more responsive, less lag
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 25,
-    restDelta: 0.001
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.0005
   })
 
   const scrollVelocity = useVelocity(scrollYProgress)
-  const yOffset = useTransform(scrollVelocity, [-1, 0, 1], [12, 0, -12])
+  const yOffset = useTransform(scrollVelocity, [-1, 0, 1], [10, 0, -10])
 
-  const frameIndex = useTransform(smoothProgress, [0, 1], [0, TOTAL_FRAMES - 1])
+  // Raw float frame index (not rounded) for interpolation
+  const frameIndexFloat = useTransform(smoothProgress, [0, 1], [0, TOTAL_FRAMES - 1])
 
-  // Preload all frames
+  // Preload all frames into a ref (avoids state re-renders)
   useEffect(() => {
     let loaded = 0
     const imageList: HTMLImageElement[] = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
@@ -46,7 +48,7 @@ function HeroCanvasAnimation() {
         loaded++
         setLoadProgress((loaded / TOTAL_FRAMES) * 100)
         if (loaded === TOTAL_FRAMES) {
-          setImages([...imageList])
+          imagesRef.current = imageList
           setImagesLoaded(true)
         }
       }
@@ -54,7 +56,7 @@ function HeroCanvasAnimation() {
         loaded++
         setLoadProgress((loaded / TOTAL_FRAMES) * 100)
         if (loaded === TOTAL_FRAMES) {
-          setImages([...imageList])
+          imagesRef.current = imageList
           setImagesLoaded(true)
         }
       }
@@ -62,42 +64,71 @@ function HeroCanvasAnimation() {
     })
   }, [])
 
-  // Canvas rendering
+  // Canvas rendering via requestAnimationFrame — silky smooth
   useEffect(() => {
-    if (!imagesLoaded || images.length === 0 || !canvasRef.current) return
+    if (!imagesLoaded || !canvasRef.current) return
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const renderFrame = () => {
-      const idx = Math.max(0, Math.min(Math.round(frameIndex.get()), TOTAL_FRAMES - 1))
-      const img = images[idx]
-      if (!img || !img.complete || img.naturalWidth === 0) return
-
+    // Size canvas once, then only on resize (NOT on every frame)
+    const sizeCanvas = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+    }
+    sizeCanvas()
 
-      // Cover fit - fill the whole canvas
+    const drawImage = (img: HTMLImageElement, alpha: number) => {
+      if (!img || !img.complete || img.naturalWidth === 0) return
       const scaleX = canvas.width / img.naturalWidth
       const scaleY = canvas.height / img.naturalHeight
       const scale = Math.max(scaleX, scaleY)
       const x = (canvas.width - img.naturalWidth * scale) / 2
       const y = (canvas.height - img.naturalHeight * scale) / 2
+      ctx.globalAlpha = alpha
+      ctx.drawImage(img, x, y, img.naturalWidth * scale, img.naturalHeight * scale)
+      ctx.globalAlpha = 1
+    }
+
+    // rAF render loop — runs every display frame (~60fps) for buttery smoothness
+    let rafId: number
+    const renderLoop = () => {
+      const imgs = imagesRef.current
+      if (imgs.length === 0) { rafId = requestAnimationFrame(renderLoop); return }
+
+      // Get the exact (float) frame position — no rounding yet
+      const rawIdx = Math.max(0, Math.min(frameIndexFloat.get(), TOTAL_FRAMES - 1))
+      const loIdx = Math.floor(rawIdx)                          // current frame
+      const hiIdx = Math.min(loIdx + 1, TOTAL_FRAMES - 1)      // next frame
+      const blend = rawIdx - loIdx                              // 0.0 → 1.0 blend factor
+
+      const imgLo = imgs[loIdx]
+      const imgHi = imgs[hiIdx]
+      if (!imgLo || !imgLo.complete || imgLo.naturalWidth === 0) {
+        rafId = requestAnimationFrame(renderLoop); return
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.drawImage(img, x, y, img.naturalWidth * scale, img.naturalHeight * scale)
+
+      // Draw current frame at full opacity
+      drawImage(imgLo, 1)
+
+      // Cross-fade next frame on top when between frames
+      if (blend > 0 && imgHi && imgHi.complete && imgHi.naturalWidth > 0) {
+        drawImage(imgHi, blend)
+      }
+
+      rafId = requestAnimationFrame(renderLoop)
     }
+    rafId = requestAnimationFrame(renderLoop)
 
-    const unsubscribe = frameIndex.on('change', renderFrame)
-    renderFrame()
-
-    const handleResize = () => renderFrame()
+    const handleResize = () => sizeCanvas()
     window.addEventListener('resize', handleResize)
     return () => {
-      unsubscribe()
+      cancelAnimationFrame(rafId)
       window.removeEventListener('resize', handleResize)
     }
-  }, [imagesLoaded, images, frameIndex])
+  }, [imagesLoaded, frameIndexFloat])
 
   // Text overlays keyed to scroll progress
   const s1Opacity = useTransform(smoothProgress, [0, 0.08, 0.18, 0.24], [0, 1, 1, 0])
