@@ -302,18 +302,7 @@ const stats = [
 
 function StatsSection() {
   return (
-    <section className="py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f2d16 0%, #0d1f0a 100%)' }}>
-      <div className="absolute inset-0 opacity-10">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-emerald-400 rounded-full"
-            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
-            animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.5, 1] }}
-            transition={{ duration: 2 + Math.random() * 3, repeat: Infinity, delay: Math.random() * 2 }}
-          />
-        ))}
-      </div>
+    <section className="py-16 relative overflow-hidden bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
@@ -325,15 +314,15 @@ function StatsSection() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="text-center group"
             >
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 text-emerald-400 group-hover:scale-110 transition-transform duration-300"
-                style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)' }}>
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 text-emerald-600 group-hover:scale-110 transition-transform duration-300"
+                style={{ background: 'rgba(34,197,94,0.10)', border: '1px solid rgba(34,197,94,0.25)' }}>
                 {stat.icon}
               </div>
-              <div className="text-4xl md:text-5xl font-black text-white mb-1"
+              <div className="text-4xl md:text-5xl font-black text-gray-900 mb-1"
                 style={{ fontFamily: 'Poppins, sans-serif' }}>
                 {stat.number}
               </div>
-              <div className="text-emerald-300/60 text-sm font-medium tracking-wide">{stat.label}</div>
+              <div className="text-gray-500 text-sm font-medium tracking-wide">{stat.label}</div>
             </motion.div>
           ))}
         </div>
@@ -386,12 +375,11 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #0d1f0a 0%, #0a1507 100%)' }}>
-      {/* Glowing orb background */}
-      <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none"
+    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white">
+      {/* Subtle green orb accents */}
+      <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, #22c55e, transparent)' }} />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-10 blur-3xl pointer-events-none"
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, #16a34a, transparent)' }} />
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -402,18 +390,18 @@ function FeaturesSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <span className="inline-block text-emerald-400 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-emerald-400/10 px-4 py-1.5 rounded-full border border-emerald-400/20">
+          <span className="inline-block text-emerald-600 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
             Platform Benefits
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-5"
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-5"
             style={{ fontFamily: 'Poppins, sans-serif' }}>
             Why Choose{' '}
             <span className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(90deg, #4ade80, #22c55e)' }}>
+              style={{ backgroundImage: 'linear-gradient(90deg, #16a34a, #22c55e)' }}>
               FarmConnect
             </span>?
           </h2>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto font-medium">
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
             Everything you need to streamline your agricultural operations in one powerful platform.
           </p>
         </motion.div>
@@ -427,25 +415,21 @@ function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative p-6 rounded-2xl border border-white/5 transition-all duration-300 cursor-default overflow-hidden"
-              style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(10px)' }}
+              className="group relative p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-default overflow-hidden"
             >
-              {/* Hover glow */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
-                style={{ background: `radial-gradient(circle at 50% 0%, ${f.color}15, transparent 70%)` }} />
-              {/* Top border glow on hover */}
-              <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-2xl"
-                style={{ background: `linear-gradient(90deg, transparent, ${f.color}80, transparent)` }} />
+              {/* Hover top accent */}
+              <div className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-2xl"
+                style={{ background: `linear-gradient(90deg, transparent, ${f.color}, transparent)` }} />
 
               <div className="relative z-10">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ background: `${f.color}18`, color: f.color, border: `1px solid ${f.color}30` }}>
+                  style={{ background: `${f.color}15`, color: f.color, border: `1px solid ${f.color}25` }}>
                   {f.icon}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                <h3 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
                   {f.title}
                 </h3>
-                <p className="text-white/45 text-sm leading-relaxed">{f.description}</p>
+                <p className="text-gray-500 text-sm leading-relaxed">{f.description}</p>
               </div>
             </motion.div>
           ))}
@@ -498,12 +482,11 @@ function ModulesSection() {
   const navigate = useNavigate()
 
   return (
-    <section id="modules" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #0a1507 0%, #060f04 100%)' }}>
-      {/* Decorative grid */}
-      <div className="absolute inset-0 opacity-[0.04]"
+    <section id="modules" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white">
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: 'linear-gradient(rgba(34,197,94,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.5) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(34,197,94,1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,1) 1px, transparent 1px)',
           backgroundSize: '60px 60px'
         }} />
 
@@ -515,18 +498,18 @@ function ModulesSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <span className="inline-block text-emerald-400 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-emerald-400/10 px-4 py-1.5 rounded-full border border-emerald-400/20">
+          <span className="inline-block text-emerald-600 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
             Your Portal
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-5"
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-5"
             style={{ fontFamily: 'Poppins, sans-serif' }}>
             Choose Your{' '}
             <span className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(90deg, #4ade80, #22c55e)' }}>
+              style={{ backgroundImage: 'linear-gradient(90deg, #16a34a, #22c55e)' }}>
               Gateway
             </span>
           </h2>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto font-medium">
+          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
             Every stakeholder has a dedicated portal designed for their specific role in the agricultural ecosystem.
           </p>
         </motion.div>
@@ -540,17 +523,8 @@ function ModulesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: i * 0.15 }}
               whileHover={{ y: -8 }}
-              className="relative group flex flex-col rounded-3xl overflow-hidden border border-white/8 transition-all duration-500"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                backdropFilter: 'blur(20px)',
-              }}
+              className="relative group flex flex-col rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-md hover:shadow-xl transition-all duration-500"
             >
-              {/* Hover glow background */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"
-                style={{ background: `radial-gradient(ellipse at 50% 0%, ${mod.glowColor}12, transparent 70%)` }}
-              />
               {/* Top gradient accent */}
               <div className="h-1 w-full" style={{ background: mod.gradient }} />
 
@@ -558,7 +532,8 @@ function ModulesSection() {
                 {/* Badge */}
                 {mod.badge && (
                   <div className="absolute top-6 right-6">
-                    <span className="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/30 tracking-wide">
+                    <span className="text-xs font-bold px-3 py-1 rounded-full tracking-wide"
+                      style={{ background: `${mod.glowColor}15`, color: mod.glowColor, border: `1px solid ${mod.glowColor}30` }}>
                       ★ {mod.badge}
                     </span>
                   </div>
@@ -578,17 +553,17 @@ function ModulesSection() {
                 </span>
 
                 {/* Title */}
-                <h3 className="text-2xl font-black text-white mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                <h3 className="text-2xl font-black text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
                   {mod.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-white/45 text-sm leading-relaxed mb-6">{mod.description}</p>
+                <p className="text-gray-500 text-sm leading-relaxed mb-6">{mod.description}</p>
 
                 {/* Features */}
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {mod.features.map((feat, fi) => (
-                    <li key={fi} className="flex items-center gap-3 text-white/65 text-sm">
+                    <li key={fi} className="flex items-center gap-3 text-gray-600 text-sm">
                       <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: mod.glowColor }} />
                       {feat}
                     </li>
@@ -625,20 +600,13 @@ function FinalCTA() {
   const navigate = useNavigate()
 
   return (
-    <section className="py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #060f04 0%, #0a1507 100%)' }}>
-      {/* Animated glowing orbs */}
+    <section className="py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white">
+      {/* Subtle animated orbs */}
       <motion.div
-        animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
+        animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05] }}
         transition={{ repeat: Infinity, duration: 8, ease: 'easeInOut' }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, #22c55e, transparent 70%)' }}
-      />
-      <motion.div
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }}
-        transition={{ repeat: Infinity, duration: 10, ease: 'easeInOut', delay: 2 }}
-        className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 rounded-full blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #4ade80, transparent 70%)' }}
       />
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -652,31 +620,31 @@ function FinalCTA() {
           <motion.div
             animate={{ rotate: [0, 180, 360], scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 6 }}
-            className="text-emerald-400 text-3xl mb-6 inline-block"
+            className="text-emerald-500 text-3xl mb-6 inline-block"
           >
             ✦
           </motion.div>
 
-          <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight"
+          <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 leading-tight"
             style={{ fontFamily: 'Poppins, sans-serif' }}>
             Ready to Transform<br />
             <span className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(90deg, #4ade80, #22c55e, #86efac)' }}>
+              style={{ backgroundImage: 'linear-gradient(90deg, #16a34a, #22c55e)' }}>
               Your Farm Business?
             </span>
           </h2>
 
-          <p className="text-white/50 text-lg mb-10 max-w-2xl mx-auto font-medium">
+          <p className="text-gray-500 text-lg mb-10 max-w-2xl mx-auto font-medium">
             Join thousands of farmers, service providers, and buyers who are already maximizing
             their profits through FarmConnect.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <motion.button
-              whileHover={{ scale: 1.06, boxShadow: '0 20px 60px rgba(34,197,94,0.4)' }}
+              whileHover={{ scale: 1.06, boxShadow: '0 20px 60px rgba(34,197,94,0.3)' }}
               whileTap={{ scale: 0.96 }}
               onClick={() => navigate('/login')}
-              className="px-10 py-4 rounded-full font-bold text-white text-lg inline-flex items-center gap-2 shadow-2xl transition-all duration-300"
+              className="px-10 py-4 rounded-full font-bold text-white text-lg inline-flex items-center gap-2 shadow-lg transition-all duration-300"
               style={{ background: 'linear-gradient(135deg, #22c55e, #15803d)' }}
             >
               Get Started Now <ArrowRight className="w-5 h-5" />
@@ -686,7 +654,7 @@ function FinalCTA() {
               href="#modules"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              className="px-10 py-4 rounded-full font-bold text-emerald-400 text-lg border-2 border-emerald-500/40 hover:border-emerald-400/70 transition-all duration-300 bg-emerald-400/5 hover:bg-emerald-400/10"
+              className="px-10 py-4 rounded-full font-bold text-emerald-600 text-lg border-2 border-emerald-300 hover:border-emerald-500 transition-all duration-300 bg-emerald-50 hover:bg-emerald-100"
             >
               Explore Portals
             </motion.a>
