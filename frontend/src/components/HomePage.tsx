@@ -302,7 +302,8 @@ const stats = [
 
 function StatsSection() {
   return (
-    <section className="py-16 relative overflow-hidden bg-white">
+    <section className="py-16 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #061008 0%, #0d2010 100%)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
@@ -314,15 +315,15 @@ function StatsSection() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="text-center group"
             >
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 text-emerald-600 group-hover:scale-110 transition-transform duration-300"
-                style={{ background: 'rgba(34,197,94,0.10)', border: '1px solid rgba(34,197,94,0.25)' }}>
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 text-emerald-400 group-hover:scale-110 transition-transform duration-300"
+                style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)' }}>
                 {stat.icon}
               </div>
-              <div className="text-4xl md:text-5xl font-black text-gray-900 mb-1"
+              <div className="text-4xl md:text-5xl font-black text-white mb-1"
                 style={{ fontFamily: 'Poppins, sans-serif' }}>
                 {stat.number}
               </div>
-              <div className="text-gray-500 text-sm font-medium tracking-wide">{stat.label}</div>
+              <div className="text-emerald-300/60 text-sm font-medium tracking-wide">{stat.label}</div>
             </motion.div>
           ))}
         </div>
@@ -375,13 +376,8 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white">
-      {/* Subtle green orb accents */}
-      <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #22c55e, transparent)' }} />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-[0.06] blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #16a34a, transparent)' }} />
-
+    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #0d2010 0%, #1a5225 100%)' }}>
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -390,18 +386,18 @@ function FeaturesSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <span className="inline-block text-emerald-600 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
+          <span className="inline-block text-emerald-300 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-white/10 px-4 py-1.5 rounded-full border border-white/20">
             Platform Benefits
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-5"
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-5"
             style={{ fontFamily: 'Poppins, sans-serif' }}>
             Why Choose{' '}
             <span className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(90deg, #16a34a, #22c55e)' }}>
+              style={{ backgroundImage: 'linear-gradient(90deg, #86efac, #4ade80)' }}>
               FarmConnect
             </span>?
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
+          <p className="text-white/60 text-lg max-w-2xl mx-auto font-medium">
             Everything you need to streamline your agricultural operations in one powerful platform.
           </p>
         </motion.div>
@@ -415,21 +411,20 @@ function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               whileHover={{ y: -6, scale: 1.02 }}
-              className="group relative p-6 rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-default overflow-hidden"
+              className="group relative p-6 rounded-2xl transition-all duration-300 cursor-default overflow-hidden border border-white/10"
+              style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)' }}
             >
-              {/* Hover top accent */}
               <div className="absolute top-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-2xl"
                 style={{ background: `linear-gradient(90deg, transparent, ${f.color}, transparent)` }} />
-
               <div className="relative z-10">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4 transition-transform duration-300 group-hover:scale-110"
-                  style={{ background: `${f.color}15`, color: f.color, border: `1px solid ${f.color}25` }}>
+                  style={{ background: `${f.color}22`, color: f.color, border: `1px solid ${f.color}40` }}>
                   {f.icon}
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
                   {f.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{f.description}</p>
+                <p className="text-white/55 text-sm leading-relaxed">{f.description}</p>
               </div>
             </motion.div>
           ))}
@@ -482,13 +477,8 @@ function ModulesSection() {
   const navigate = useNavigate()
 
   return (
-    <section id="modules" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white">
-      {/* Subtle grid pattern */}
-      <div className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(34,197,94,1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,1) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
-        }} />
+    <section id="modules" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #1a5225 0%, #d4edd7 100%)' }}>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
@@ -498,18 +488,18 @@ function ModulesSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <span className="inline-block text-emerald-600 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">
+          <span className="inline-block text-emerald-200 text-sm font-semibold tracking-[0.3em] uppercase mb-4 bg-white/15 px-4 py-1.5 rounded-full border border-white/25">
             Your Portal
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-5"
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-5"
             style={{ fontFamily: 'Poppins, sans-serif' }}>
             Choose Your{' '}
             <span className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(90deg, #16a34a, #22c55e)' }}>
+              style={{ backgroundImage: 'linear-gradient(90deg, #86efac, #4ade80)' }}>
               Gateway
             </span>
           </h2>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">
+          <p className="text-white/65 text-lg max-w-2xl mx-auto font-medium">
             Every stakeholder has a dedicated portal designed for their specific role in the agricultural ecosystem.
           </p>
         </motion.div>
@@ -523,12 +513,12 @@ function ModulesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: i * 0.15 }}
               whileHover={{ y: -8 }}
-              className="relative group flex flex-col rounded-3xl overflow-hidden border border-gray-100 bg-white shadow-md hover:shadow-xl transition-all duration-500"
+              className="relative group flex flex-col rounded-3xl overflow-hidden bg-white border border-white/60 shadow-lg hover:shadow-2xl transition-all duration-500"
             >
               {/* Top gradient accent */}
               <div className="h-1 w-full" style={{ background: mod.gradient }} />
 
-              <div className="p-8 flex flex-col flex-1 relative z-10">
+              <div className="p-8 flex flex-col flex-1">
                 {/* Badge */}
                 {mod.badge && (
                   <div className="absolute top-6 right-6">
@@ -547,20 +537,16 @@ function ModulesSection() {
                   {mod.icon}
                 </div>
 
-                {/* Tagline */}
                 <span className="text-xs font-bold tracking-widest uppercase mb-2" style={{ color: mod.glowColor }}>
                   {mod.tagline}
                 </span>
 
-                {/* Title */}
                 <h3 className="text-2xl font-black text-gray-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
                   {mod.title}
                 </h3>
 
-                {/* Description */}
                 <p className="text-gray-500 text-sm leading-relaxed mb-6">{mod.description}</p>
 
-                {/* Features */}
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {mod.features.map((feat, fi) => (
                     <li key={fi} className="flex items-center gap-3 text-gray-600 text-sm">
@@ -570,16 +556,12 @@ function ModulesSection() {
                   ))}
                 </ul>
 
-                {/* CTA Button — redirects to /login */}
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => navigate('/login')}
                   className="w-full py-3.5 rounded-xl font-bold text-white text-base flex items-center justify-center gap-2 transition-all duration-300 shadow-lg"
-                  style={{
-                    background: mod.gradient,
-                    boxShadow: `0 4px 24px ${mod.shadowColor}`
-                  }}
+                  style={{ background: mod.gradient, boxShadow: `0 4px 24px ${mod.shadowColor}` }}
                 >
                   Access {mod.title.split(' ')[0]} Portal
                   <ArrowRight className="w-5 h-5" />
@@ -600,15 +582,8 @@ function FinalCTA() {
   const navigate = useNavigate()
 
   return (
-    <section className="py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-white">
-      {/* Subtle animated orbs */}
-      <motion.div
-        animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05] }}
-        transition={{ repeat: Infinity, duration: 8, ease: 'easeInOut' }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #22c55e, transparent 70%)' }}
-      />
-
+    <section className="py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #d4edd7 0%, #f4fbf5 100%)' }}>
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -616,7 +591,6 @@ function FinalCTA() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Sparkle */}
           <motion.div
             animate={{ rotate: [0, 180, 360], scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 6 }}
@@ -634,7 +608,7 @@ function FinalCTA() {
             </span>
           </h2>
 
-          <p className="text-gray-500 text-lg mb-10 max-w-2xl mx-auto font-medium">
+          <p className="text-gray-600 text-lg mb-10 max-w-2xl mx-auto font-medium">
             Join thousands of farmers, service providers, and buyers who are already maximizing
             their profits through FarmConnect.
           </p>
@@ -654,7 +628,7 @@ function FinalCTA() {
               href="#modules"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              className="px-10 py-4 rounded-full font-bold text-emerald-600 text-lg border-2 border-emerald-300 hover:border-emerald-500 transition-all duration-300 bg-emerald-50 hover:bg-emerald-100"
+              className="px-10 py-4 rounded-full font-bold text-emerald-700 text-lg border-2 border-emerald-400 hover:border-emerald-600 transition-all duration-300 bg-white/60 hover:bg-white"
             >
               Explore Portals
             </motion.a>
