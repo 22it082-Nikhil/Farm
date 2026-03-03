@@ -277,10 +277,11 @@ const HomePage = () => {
                   className="text-left px-6 md:px-16 max-w-2xl"
                 >
                   <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
-                     
+                     End-to-End Farm Management
                   </h2>
                   <p className="text-base md:text-xl text-gray-700">
-                    
+                    From harvest planning to logistics and sales, FarmConnect helps you streamline operations
+                    and unlock better margins on every crop.
                   </p>
                 </motion.div>
 
