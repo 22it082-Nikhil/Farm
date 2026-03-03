@@ -1,5 +1,6 @@
 // Import required libraries and components
-import { motion } from 'framer-motion' // For smooth animations and transitions
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useSpring, useTransform, useVelocity } from 'framer-motion' // For smooth animations and transitions
 import {
   // Navigation and UI icons for homepage
   Leaf,
@@ -7,17 +8,137 @@ import {
   Users,
   ShoppingCart,
   ArrowRight,
-  Star,
-  Shield,
-  Zap,
-  Globe,
-  TrendingUp,
-  Heart,
   CheckCircle
 } from 'lucide-react' // Icon library for consistent UI elements
 
 // Main HomePage Component - Landing page for the agricultural marketplace platform
 const HomePage = () => {
+  // ===== Scroll-based hero animation setup =====
+  const TOTAL_FRAMES = 240
+  const FRAME_PATH = '/frames'
+
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [images, setImages] = useState<HTMLImageElement[]>([])
+  const [imagesLoaded, setImagesLoaded] = useState(false)
+  const [loadProgress, setLoadProgress] = useState(0)
+
+  // Scroll progress tracking for hero section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start']
+  })
+
+  // Smooth spring animation for buttery scroll
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
+
+  // Anti-gravity effect based on scroll velocity
+  const scrollVelocity = useVelocity(scrollYProgress)
+  const yOffset = useTransform(scrollVelocity, [-1, 0, 1], [15, 0, -15])
+
+  // Map scroll to frame index (bi-directional)
+  const frameIndex = useTransform(smoothProgress, [0, 1], [0, TOTAL_FRAMES - 1])
+
+  // Preload all frames (using existing JPG sequence)
+  useEffect(() => {
+    let isCancelled = false
+
+    const loadImages = async () => {
+      const imagePromises = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
+        return new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image()
+          const index = i + 1 // files start at 001
+          const fileNumber = String(index).padStart(3, '0')
+          img.src = `${FRAME_PATH}/ezgif-frame-${fileNumber}.jpg`
+
+          img.onload = () => {
+            if (!isCancelled) {
+              setLoadProgress(prev => Math.min(100, prev + 100 / TOTAL_FRAMES))
+            }
+            resolve(img)
+          }
+
+          img.onerror = (err) => {
+            console.error('Error loading frame', img.src, err)
+            reject(err)
+          }
+        })
+      })
+
+      try {
+        const loadedImages = await Promise.all(imagePromises)
+        if (!isCancelled) {
+          setImages(loadedImages)
+          setImagesLoaded(true)
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error('Error loading hero animation frames', error)
+        }
+      }
+    }
+
+    loadImages()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [])
+
+  // Canvas rendering
+  useEffect(() => {
+    if (!imagesLoaded || !canvasRef.current) return
+
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const renderFrame = () => {
+      const currentFrame = Math.round(frameIndex.get())
+      const img = images[Math.max(0, Math.min(currentFrame, TOTAL_FRAMES - 1))]
+
+      if (!img) return
+
+      // Responsive canvas sizing
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+
+      // Contain fit
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height)
+      const drawWidth = img.width * scale
+      const drawHeight = img.height * scale
+      const x = (canvas.width - drawWidth) / 2
+      const y = (canvas.height - drawHeight) / 2
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(img, x, y, drawWidth, drawHeight)
+    }
+
+    const unsubscribe = frameIndex.on('change', renderFrame)
+    renderFrame() // initial render
+
+    const handleResize = () => {
+      renderFrame()
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      unsubscribe()
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [imagesLoaded, images, frameIndex])
+
+  // Text overlay animations
+  const section1Opacity = useTransform(smoothProgress, [0, 0.1, 0.2, 0.3], [0, 1, 1, 0])
+  const section2Opacity = useTransform(smoothProgress, [0.3, 0.4, 0.55, 0.65], [0, 1, 1, 0])
+  const section3Opacity = useTransform(smoothProgress, [0.65, 0.75, 0.9, 1], [0, 1, 1, 0])
+  const scrollIndicatorOpacity = useTransform(smoothProgress, [0, 0.1], [1, 0])
+
   // Platform features data - Key benefits and capabilities
   const features = [
     {
@@ -104,47 +225,107 @@ const HomePage = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6"
-            >
-              <span className="gradient-text bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent">
-                Revolutionizing
-              </span>
-              <br />
-              <span className="text-gray-800">Agriculture</span>
-            </motion.h1>
+      {/* Hero Section with scroll-based canvas animation */}
+      <section className="pt-24 pb-16">
+        {/* Loading overlay while frames are being fetched */}
+        {!imagesLoaded && (
+          <div className="fixed inset-0 z-40 bg-white/90 flex flex-col items-center justify-center">
+            <div className="w-64 h-2 bg-emerald-100 rounded-full overflow-hidden mb-4">
+              <motion.div
+                className="h-full bg-gradient-to-r from-primary-500 to-emerald-500"
+                initial={{ width: '0%' }}
+                animate={{ width: `${loadProgress}%` }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+            <p className="text-emerald-700 text-lg font-semibold">
+              Preparing your farm experience... {Math.round(loadProgress)}%
+            </p>
+          </div>
+        )}
 
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
-            >
-              Connect farmers, service providers, and buyers in one seamless platform.
-              Streamline your agricultural operations and maximize your profits.
-            </motion.p>
+        <div ref={containerRef} className="relative h-[450vh]">
+          <div className="sticky top-16 md:top-20 h-[calc(100vh-4rem)]">
+            <div className="relative w-full h-full overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50">
+              {/* Canvas */}
+              <motion.div style={{ y: yOffset }} className="w-full h-full">
+                <canvas ref={canvasRef} className="w-full h-full" />
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            >
-              <a href="/login" className="btn-primary text-lg px-8 py-4 inline-flex items-center">
-                Explore Modules
-                <ArrowRight className="w-5 h-5 ml-2 inline" />
-              </a>
-              <button className="btn-outline text-lg px-8 py-4">
-                Watch Demo
-              </button>
-            </motion.div>
+              {/* Text overlays */}
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                {/* Section 1: Main headline */}
+                <motion.div
+                  style={{ opacity: section1Opacity }}
+                  className="text-center px-4"
+                >
+                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
+                    <span className="gradient-text bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent">
+                      Revolutionizing
+                    </span>
+                    <br />
+                    <span className="text-gray-800">Agriculture</span>
+                  </h1>
+                  <p className="text-lg md:text-2xl text-gray-700 max-w-3xl mx-auto">
+                    Connect farmers, service providers, and buyers in one seamless platform.
+                  </p>
+                </motion.div>
+
+                {/* Section 2: Platform value */}
+                <motion.div
+                  style={{ opacity: section2Opacity }}
+                  className="text-left px-6 md:px-16 max-w-2xl"
+                >
+                  <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+                    End-to-End Farm Management
+                  </h2>
+                  <p className="text-base md:text-xl text-gray-700">
+                    From harvest planning to logistics and sales, FarmConnect helps you streamline operations
+                    and unlock better margins on every crop.
+                  </p>
+                </motion.div>
+
+                {/* Section 3: Call-to-action content */}
+                <motion.div
+                  style={{ opacity: section3Opacity }}
+                  className="text-center px-6 max-w-3xl mx-auto"
+                >
+                  <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">
+                    One Platform. Every Stakeholder.
+                  </h2>
+                  <p className="text-base md:text-xl text-gray-700 mb-8">
+                    Farmers, service providers, and buyers work together in real time to move harvests faster
+                    and more efficiently.
+                  </p>
+                  <div className="pointer-events-auto flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="/login" className="btn-primary text-lg px-8 py-4 inline-flex items-center">
+                      Explore Modules
+                      <ArrowRight className="w-5 h-5 ml-2 inline" />
+                    </a>
+                    <button className="btn-outline text-lg px-8 py-4">
+                      Watch Demo
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Scroll indicator */}
+              <motion.div
+                style={{ opacity: scrollIndicatorOpacity }}
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+              >
+                <p className="text-sm text-gray-600 tracking-wider uppercase">
+                  Scroll to explore
+                </p>
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="w-6 h-10 border-2 border-emerald-400/70 rounded-full flex items-start justify-center p-1"
+                >
+                  <div className="w-1 h-3 bg-emerald-500 rounded-full" />
+                </motion.div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
