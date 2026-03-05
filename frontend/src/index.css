@@ -60,4 +60,49 @@
   .glass-effect {
     @apply backdrop-blur-md bg-white/20 border border-white/30;
   }
+
+  /* Auth toggle with sliding background */
+  .auth-toggle {
+    @apply relative flex items-center bg-gray-100 rounded-full p-1;
+  }
+
+  .auth-toggle-track {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 9999px;
+    pointer-events: none;
+  }
+
+  .auth-toggle-track::before {
+    content: '';
+    position: absolute;
+    left: -250%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #16a34a, #22c55e);
+    border-radius: 9999px;
+    z-index: 0;
+    transition: transform 1.2s ease-in-out;
+  }
+
+  .auth-toggle-track.login-active::before {
+    transform: translateX(0%);
+  }
+
+  .auth-toggle-track.signup-active::before {
+    transform: translateX(33.33%);
+  }
+
+  .auth-toggle-button {
+    @apply relative z-10 flex-1 text-center py-2 text-sm font-semibold rounded-full transition-colors duration-300;
+  }
+
+  .auth-toggle-button-active {
+    @apply text-white;
+  }
+
+  .auth-toggle-button-inactive {
+    @apply text-gray-500;
+  }
 }

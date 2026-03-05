@@ -8,7 +8,7 @@ import {
   ArrowLeft,
   Check
 } from 'lucide-react'
-import { SignIn, useUser, useClerk } from '@clerk/clerk-react'
+import { SignIn, SignUp, useUser, useClerk } from '@clerk/clerk-react'
 
 // Main LoginPage Component - Handles authentication for all three user portals
 const LoginPage = () => {
@@ -16,6 +16,8 @@ const LoginPage = () => {
   const { signOut } = useClerk()
   // State management for portal selection
   const [activeTab, setActiveTab] = useState<'farmer' | 'service' | 'buyer'>('farmer')
+  // State management for auth mode (login vs signup)
+  const [authTab, setAuthTab] = useState<'login' | 'signup'>('login')
 
   const portalConfig = {
     farmer: {
@@ -109,7 +111,7 @@ const LoginPage = () => {
         </nav>
 
         <div className="w-full max-w-sm sm:max-w-md mt-20 lg:mt-0 relative z-10">
-          <div className="mb-12 text-center lg:text-left">
+          <div className="mb-8 text-center lg:text-left">
             <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-3">Welcome Back</h2>
             <p className="text-gray-500 text-lg">Please sign in to your account</p>
           </div>
@@ -128,6 +130,29 @@ const LoginPage = () => {
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
             ))}
+          </div>
+
+          {/* Auth mode toggle (Login / Sign Up) */}
+          <div className="mb-8">
+            <div className="auth-toggle">
+              <div
+                className={`auth-toggle-track ${authTab === 'login' ? 'login-active' : 'signup-active'}`}
+              />
+              <button
+                type="button"
+                className={`auth-toggle-button ${authTab === 'login' ? 'auth-toggle-button-active' : 'auth-toggle-button-inactive'}`}
+                onClick={() => setAuthTab('login')}
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                className={`auth-toggle-button ${authTab === 'signup' ? 'auth-toggle-button-active' : 'auth-toggle-button-inactive'}`}
+                onClick={() => setAuthTab('signup')}
+              >
+                Sign Up
+              </button>
+            </div>
           </div>
 
           {/* Clerk Authentication Component */}
@@ -167,27 +192,51 @@ const LoginPage = () => {
               </motion.div>
             ) : (
               <div className="login-wrapper">
-<SignIn
-  appearance={{
-    elements: {
-      rootBox: "w-full",
-      card: "shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 w-full bg-white rounded-[2rem] border border-gray-50",
-      headerTitle: "hidden",
-      headerSubtitle: "hidden",
-      formButtonPrimary: `bg-gradient-to-r ${portalConfig[activeTab].color} text-white py-4 rounded-2xl hover:opacity-90 shadow-lg transform hover:-translate-y-0.5 transition-all text-base`,
-      formFieldInput: "rounded-2xl border-gray-100 focus:border-indigo-500 focus:ring-indigo-500 py-3.5 bg-gray-50",
-      formFieldLabel: "ml-2 text-gray-500 font-medium",
-      socialButtonsBlockButton: "py-3.5 rounded-2xl border-none bg-gray-50 hover:bg-gray-100 font-medium text-gray-600 transition-colors",
-      footerActionLink: `text-${portalConfig[activeTab].accent.split('-')[1]}-600 font-bold hover:underline`,
-    },
-    layout: {
-      socialButtonsPlacement: 'top',
-      showOptionalFields: false
-    }
-  }}
-  forceRedirectUrl={`/auth-callback?role=${activeTab}`}
-  signUpUrl="/sign-up"
-/>
+                {authTab === 'login' ? (
+                  <SignIn
+                    appearance={{
+                      elements: {
+                        rootBox: "w-full",
+                        card: "shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 w-full bg-white rounded-[2rem] border border-gray-50",
+                        headerTitle: "hidden",
+                        headerSubtitle: "hidden",
+                        formButtonPrimary: `bg-gradient-to-r ${portalConfig[activeTab].color} text-white py-4 rounded-2xl hover:opacity-90 shadow-lg transform hover:-translate-y-0.5 transition-all text-base`,
+                        formFieldInput: "rounded-2xl border-gray-100 focus:border-indigo-500 focus:ring-indigo-500 py-3.5 bg-gray-50",
+                        formFieldLabel: "ml-2 text-gray-500 font-medium",
+                        socialButtonsBlockButton: "py-3.5 rounded-2xl border-none bg-gray-50 hover:bg-gray-100 font-medium text-gray-600 transition-colors",
+                        footerActionLink: `text-${portalConfig[activeTab].accent.split('-')[1]}-600 font-bold hover:underline`,
+                      },
+                      layout: {
+                        socialButtonsPlacement: 'top',
+                        showOptionalFields: false
+                      }
+                    }}
+                    forceRedirectUrl={`/auth-callback?role=${activeTab}`}
+                    signUpUrl="/sign-up"
+                  />
+                ) : (
+                  <SignUp
+                    appearance={{
+                      elements: {
+                        rootBox: "w-full",
+                        card: "shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 w-full bg-white rounded-[2rem] border border-gray-50",
+                        headerTitle: "hidden",
+                        headerSubtitle: "hidden",
+                        formButtonPrimary: `bg-gradient-to-r ${portalConfig[activeTab].color} text-white py-4 rounded-2xl hover:opacity-90 shadow-lg transform hover:-translate-y-0.5 transition-all text-base`,
+                        formFieldInput: "rounded-2xl border-gray-100 focus:border-indigo-500 focus:ring-indigo-500 py-3.5 bg-gray-50",
+                        formFieldLabel: "ml-2 text-gray-500 font-medium",
+                        socialButtonsBlockButton: "py-3.5 rounded-2xl border-none bg-gray-50 hover:bg-gray-100 font-medium text-gray-600 transition-colors",
+                        footerActionLink: `text-${portalConfig[activeTab].accent.split('-')[1]}-600 font-bold hover:underline`,
+                      },
+                      layout: {
+                        socialButtonsPlacement: 'top',
+                        showOptionalFields: false
+                      }
+                    }}
+                    forceRedirectUrl={`/auth-callback?role=${activeTab}`}
+                    signInUrl="/login"
+                  />
+                )}
               </div>
             )}
           </div>
