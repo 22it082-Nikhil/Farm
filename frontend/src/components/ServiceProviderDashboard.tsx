@@ -2739,6 +2739,7 @@ const ServiceProviderDashboard = () => {
       case 'broadcasts': return renderBroadcasts()
       case 'jobs': return renderJobs()
       case 'bids': return renderBids()
+      case 'history': return renderAcceptedBids()
       case 'chats': return (
         user ? <ChatSystem currentUser={{ id: user._id, name: user.name }} role="provider" /> : <div>Loading...</div>
       )
@@ -2849,6 +2850,7 @@ const ServiceProviderDashboard = () => {
                   { id: 'broadcasts', name: 'Service Broadcasts', icon: <Truck className="w-5 h-5" /> },
                   { id: 'jobs', name: 'Job Requests', icon: <Briefcase className="w-5 h-5" /> },
                   { id: 'bids', name: 'My Bids', icon: <FileText className="w-5 h-5" /> },
+                  { id: 'history', name: 'Market History', icon: <CheckCircle className="w-5 h-5" /> },
                   { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> }
                 ].map((item) => (
