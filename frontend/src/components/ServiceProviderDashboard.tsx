@@ -1628,8 +1628,7 @@ const ServiceProviderDashboard = () => {
               >
                 List
               </button>
-              {/* Map button hidden as per user request */}
-              {/* <button
+              <button
                 onClick={() => setBidViewMode('map')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${bidViewMode === 'map'
                   ? 'bg-blue-100 text-blue-700 shadow-sm'
@@ -1637,7 +1636,7 @@ const ServiceProviderDashboard = () => {
                   }`}
               >
                 Map
-              </button> */}
+              </button>
               <button
                 onClick={() => setBidViewMode('calendar')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${bidViewMode === 'calendar'
