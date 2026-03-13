@@ -1458,8 +1458,7 @@ const ServiceProviderDashboard = () => {
           >
             List View
           </button>
-          {/* Map View button hidden as per user request */}
-          {/* <button
+          <button
             onClick={() => setJobViewMode('map')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${jobViewMode === 'map'
               ? 'bg-blue-100 text-blue-700 shadow-sm'
@@ -1467,7 +1466,7 @@ const ServiceProviderDashboard = () => {
               }`}
           >
             Map View
-          </button> */}
+          </button>
         </div>
       </motion.div>
 
