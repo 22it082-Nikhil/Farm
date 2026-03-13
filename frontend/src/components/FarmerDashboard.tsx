@@ -1104,7 +1104,9 @@ const FarmerDashboard = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Rate:</span>
-                  <span className="font-medium text-green-600">{service.rate}</span>
+                  <span className="font-medium text-green-600">
+                    {service.rate?.toString().startsWith('₹') ? service.rate : `₹${service.rate}`}{!service.rate?.toString().includes('/hr') && '/hr'}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Contact:</span>
