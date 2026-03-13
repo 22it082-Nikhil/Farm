@@ -1566,6 +1566,8 @@ const BuyerDashboard = () => {
       case 'overview': return renderOverview() // Shows dashboard overview with stats and activities
       case 'crops': return renderCrops() // Shows available crops for purchase
       case 'orders': return renderOrders() // Shows buyer's current and past orders
+      case 'trends': return renderMarketTrends() // Shows market trends
+      case 'saved': return renderSaved() // Shows saved items
       case 'profile': return renderProfile() // Shows user profile
       default: return renderOverview() // Default to overview if no tab is selected
     }
@@ -1940,8 +1942,10 @@ const BuyerDashboard = () => {
                 {[
                   { id: 'overview', name: 'Overview', icon: <Home className="w-5 h-5" /> }, // Dashboard overview
                   { id: 'requirements', name: 'Post Requirements', icon: <ClipboardList className="w-5 h-5" /> },
+                  { id: 'trends', name: 'Market Trends', icon: <TrendingUp className="w-5 h-5" /> }, // Market Trends
                   { id: 'crops', name: 'Browse Crops', icon: <Crop className="w-5 h-5" /> }, // Available crops
                   { id: 'orders', name: 'My Orders', icon: <Package className="w-5 h-5" /> }, // Order management
+                  { id: 'saved', name: 'Saved Items', icon: <Heart className="w-5 h-5" /> }, // Wishlist
                   { id: 'chats', name: 'Messages', icon: <MessageSquare className="w-5 h-5" /> },
                   { id: 'profile', name: 'Profile', icon: <User className="w-5 h-5" /> } // User profile
                 ].map((item) => ( // Maps through navigation items to create menu buttons
